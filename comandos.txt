@@ -1,0 +1,1374 @@
+#################################################################################################################################################################
+############################################################################ GIT ################################################################################
+#################################################################################################################################################################
+
+
+#####Comando GIT#####
+#Subir con GitHub el codigo fuente
+git init //Inicializar nuestro repositorio
+git add . //Prepara todos los archivos modificados
+git commit -m "primer commit" //Toma la "fotografia" de los archivos modificados
+git checkout -- . //Reconstruye los fuentes al ultimo commit
+git branch -M main //Renombra la rama donde nos encontramos y le cambia el nombre a main
+git remote add origin https://github.com/Divier/seccion_7_curso_angular_gifs.git (Este ya debe existir, crear previamente en github.com)
+git push -u origin main
+#Generar version
+git tag -a v1.0 -m "Fin base angular"
+#Ver la version
+git tag
+#Para subir el tag creado a GitHub
+git push --tags
+#Luego de crear el tag, en GitHub se crea el Release Tag
+En tags - edit
+#Clonar un repositorio
+git clone https://github.com/EscuelaIt/angular-avanzado.git . 
+El último punto le indica que el clon lo vas a colocar en la carpeta donde estás situado
+#En GitHub el uso de fork para sacar una copia de un repositorio existente
+Esto es, un repositorio que es copia de otro que ya está publicado en GitHub
+
+
+#################################################################################################################################################################
+################################################################### Visual Studio Code ##########################################################################
+#################################################################################################################################################################
+
+Extensiones
+- Paste JSON as code
+- TODO Highlight
+- Todo Tree
+- Material Icon
+- Color Highlight
+- Bracket pair colorizer 2
+- Auto Close Tag
+- TypeScript Importer
+- Activitus Bar
+- Angular Essentials
+
+- Abrir consola Crtl+Ñ
+- Buscar Archivo Ctrl+P
+
+
+#################################################################################################################################################################
+######################################################################## TypeScript #############################################################################
+#################################################################################################################################################################
+npm install -g typescript (Instala TypeScript de forma global)
+tsc --version
+tsc app (Genera el archivo .js correspondiente)
+tsc --init (Genera el archivo tsconfig.json)
+Con el archivo tsconfig.json creado se puede ejecutar:
+tsc (Para generar todos los js que requiera la aplicacion y no uno por uno)
+tsc -w (Este comando permite estar mirando los cambios en cualquier archivo y hace la transpilacion de manera automatica)
+
+npm init (crear el archivo package.json)
+
+Para utilizar librerias de terceros se deben tener en cuenta los archivos de definiciones "*.d.ts" o Typings
+Ejm: 
+@types/express (Usar express)
+@types/jquery (Usar JQuery)
+
+#################################################################################################################################################################
+########################################################################### RxJS ################################################################################
+#################################################################################################################################################################
+
+Patron Observer: Notificar cuando suceden cambios
+Patron Iterator: Podr ejecutar operaciones secuenciales
+Programacion Funcional: Tener funciones con tareas especificas que reciban argumentos y no muten la informacion
+
+=== (Operador de equidad mismo tipo mismo valor) 
+
+Los observables calientes comienzan a producir notificaciones independientemente de las suscripciones. Los observables fríos solo producen notificaciones cuando hay una o más suscripciones.
+
+OBSERVABLES FRÍOS
+Los Observables "fríos" son aquellos que no emiten valores hasta que haya una suscripción activa, ya que la información es producida dentro del Observable y por tanto solo emiten valores en el momento en que se establece una nueva subscripción, por eso, el ejemplo previo que hemos visto, math.random() devuelve valores diferentes.
+
+OBSERVABLES CALIENTES
+Por contra, los Observables "calientes" son aquellos que pueden emitir valores sin que haya ninguna subscripción activa, porque la información del stream se produce fuera del propio Observable. RxJs dispone de algunos Observables ¨calientes¨ y el mejor ejemplo de éstos, es fromEvent que nos permite establecer un Observable sobre cualquier tipo de evento como el click del ratón:
+
+SUBJECTS
+Los subjects de RxJs son un tipo de Observable especial que nos permiten realizar diversas tareas como el multicasting, es decir, compartir exactamente el mismo stream de datos con todas las subscripciones sin preocuparnos del tipo de Observable que estamos manejando.
+
+Aparte, hay otra característica de los Subjects que les da una gran versatilidad y es que los Subjects de RxJs son Observables y Observers al mismo tiempo por lo que nos podemos subscribir a un Subject como a cualquier otro Observable, pero además disponen de los métodos next(), error() y complete() que tienen el Observer para emitir sus valores.
+
+
+#################################################################################################################################################################
+######################################################################## JavaSCript #############################################################################
+#################################################################################################################################################################
+
+-Todos los primitivos se pasan por valor, mientras que los objetos y los arreglos se pasan por referencia.
+-Biblioteca de utilidades para JavaScript
+https://underscorejs.org/ (Se utiliza en la Seccion 5 del curso de JavaScript)
+-// Sintaxis del modo estricto para todo el script
+'use strict';
+-En esta pagina se puede copiar el codigo JavaScript que construyamos y generar un archivo minify (Ejm. mi-archivo-min.js)
+https://javascript-minifier.com/
+
+-Usar webpack
+mkdir webpack-demo
+cd webpack-demo
+npm init -y
+-Instalar webpack
+npm install webpack webpack-cli --save-dev
+
+WebPack asume que el punto de entrada del proyecto es src/index.js y genera el resultado en dist/main.js minificado y optimizado para producción.
+(Este archivo .js lo inyecta en el .html)
+
+
+-Enlaces de informacion de webpack
+https://webpack.js.org/guides/getting-started/
+https://webpack.js.org/configuration/
+
+MONTAR HTML EN CARPETA DIST
+https://webpack.js.org/loaders/html-loader/
+npm install --save-dev html-loader (Instalacion de desarrollo, sirve para mover el html)
+npm install --save-dev html-webpack-plugin(Instalacion de desarrollo, sirve realizar una inyeccion de nuestro codigo html en el index que se va a terminar generando)
+-En el archivo package.json en las dependencias de desarrollo se pueden ver ambos plugins instalados
+-La instalacion se complemeta en el archivo webpack.config.js (module-rules y plugins)
+
+https://webpack.js.org/configuration/dev-server/
+npm install --save-dev webpack-dev-server (Sirve para desplegar la aplicacion en un servidor de desarrollo local)
+-En el archivo package.json en las dependencias de desarrollo se puede ver el plugin instalado
+
+MONTAR CSS EN CARPETA DIST
+https://webpack.js.org/loaders/css-loader/
+https://webpack.js.org/loaders/style-loader/
+npm install --save-dev css-loader style-loader (Sirven para cargar estilos en mi aplicacion, e inyectar el .css en el .html)
+-En el archivo package.json en las dependencias de desarrollo se pueden ver los plugins instalados
+-La instalacion se complemeta en el archivo webpack.config.js (module-rules)
+
+npm install --save-dev mini-css-extract-plugin (Sirve para cargar un archivo css de forma global)
+-La instalacion se complemeta en el archivo webpack.config.js (module-rules y plugins)
+
+MANEJO DE IMAGENES
+npm install file-loader --save-dev (Permite la importacion de imagenes desde directorio Ejm assets)
+-La instalacion se complemeta en el archivo webpack.config.js (module-rules)
+npm install copy-webpack-plugin --save-dev (Permite copiar y mover recursos estaticos como imagenes de un directorio Ejm assets)
+-La instalacion se complemeta en el archivo webpack.config.js (plugins)
+
+EN MODO PRODUCCION
+npm install --save-dev css-minimizer-webpack-plugin terser-webpack-plugin (Permite minimizar archivos css)
+-En el archivo package.json en las dependencias de desarrollo se pueden ver los plugins instalados
+-La instalacion se complemeta en el archivo webpack.config.js (optimization)
+
+INSTALACION DE BABEL PARA LA COMPATIBILIDAD CON NAVEGADORES DE VERSIONES ANTERIORES
+https://babeljs.io/setup
+npm install --save-dev babel-loader @babel/core
+-La instalacion se complemeta en el archivo webpack.config.js (module-rules)
+Create babel.config.json configuration file
+npm install @babel/preset-env --save-dev
+
+-El método map() crea un nuevo array con los resultados de la llamada a la función indicada aplicados a cada uno de sus elementos.
+-El método filter() crea un nuevo array con todos los elementos que cumplan la condición implementada por la función dada.
+-El método JSON.stringify() convierte un objeto o valor de JavaScript en una cadena de texto JSON.
+-El método JSON.parse() analiza una cadena de texto como JSON, transformando opcionalmente el valor producido por el análisis.
+
+
+# Accediendo a las propiedades de un objeto, hay 3 formas:
+- object.property
+- object['property']
+- const { property } = object
+
+
+# Definiendo un alias para una propiedad
+- const { identifier: aliasIdentifier } = expression;
+
+
+# Llamando peticiones http en simultaneo
+
+const fileUploadPromises = [];
+for (const file of files) {
+	fileUploadPromises.push(fileUpload(file)) // fileUpload internamente llama un API Rest.
+}
+const photosUrls = await Promise.all(fileUploadPromises); // Promise.all se cumple cuando todas las promesas del iterable dado se han cumplido, o es rechazada si alguna promesa no se cumple. 
+
+
+#################################################################################################################################################################
+########################################################################## Angular ##############################################################################
+#################################################################################################################################################################
+
+
+#####Instalacion#####
+
+#Instalar Angular-cli:
+npm install -g @angular/cli
+#Para reconstruir un proyecto y generar la carpeta de los modulos del mismo (Ubicarse en el directorio raiz donde estan los fuentes)
+npm install
+#Para instalar la libreria de internacionalizacion para Angular (i18n).
+npm install @ngx-translate/core @ngx-translate/http-loader rxjs --save
+#Para instalar libreria para manejo de fechas (moment)
+npm install moment --save
+
+
+#####Estilos Animados CSS#####
+De la pagina https://animate.style/ copia la ruta de css
+Ejm:
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+Y pegarla en el archivo index.html en la seccion correspondiente
+
+
+#####Comandos Trabajar#####
+
+#Crear nuevo proyecto angular
+ng new mi-app
+#Generar nuevo modulo
+ng generate module mi-app
+ng generate module mi-app --routing (Esta ultima instruccion genera el archivo xxx.module.tx y el xxx-routing.module.ts)
+#Generar nuevo componente
+ng generate component mi-app/componentxxx
+#Generar nuevo servicio
+ng generate service mi-app/services/servicexxx (Los servicios son singleton y quedan disponibles para toda la aplicacion, solo se deben inyectar donde se necesiten)
+#Generar nuevo pipe
+ng generate pipe mi-app/pipes/pipexxx
+#Generar Guard (Servicio de Proteccion de rutas)
+ng generate guard mi-app/guards/guardxxx
+#Generar Directiva
+(Ejemplo)
+ng generate directive shared/directives/errorMsg --skiptTest 
+El anterior comando crea la directiva en la ubicacion dada y actualiza las declaraciones del modulo correspondiente.
+#Subir la aplicacion
+ng serve -o
+#Subir la aplicacion con proxy para consumir API local (Tener en cuenta crear el archivo proxy.conf.json y modificar el package.json)
+Ejm proxy.conf.json:
+{
+  "/ApiCol/*":{
+    "target":"http://localhost:7001",
+    "secure":false,
+    "logLevel": "debug"
+  }
+}
+package.json
+"start": "ng serve --proxy-config proxy.conf.json"
+Ahora si en consola ejecutar:
+ng serve --proxy-config proxy.conf.json
+(No olvidar hacer los llamados en el servicio desde la ruta raiz configurada, Ejm: this.http.get('/ApiCol/Rest/ListAll/getAsignaturas'))
+#Generar build de produccion
+ng build
+#Generar build de desarollo
+ng build --configuration=development
+
+#Si se configuran build por ambiente en el package.json y en el angular.json, se puede ejecutar en consola npm run build:develop o npm run build:master
+etc, segun el ambiente que se quiera generar:
+Ejm en el package.json:
+"scripts": {
+	"ng": "ng",
+	"start": "ng serve",
+	"build": "ng build",
+	"watch": "ng build --watch --configuration development",
+	"test": "ng test",
+	"build:develop": "ng build --configuration=develop --output-hashing=all --base-href=/ComercialProtectionOrder/",
+	"build:release": "ng build --configuration=release --output-hashing=all --base-href=/ComercialProtectionOrder/",
+	"build:preprod": "ng build --configuration=preprod --output-hashing=all --base-href=/ComercialProtectionOrder/",
+	"build:master": "ng build --configuration=master --output-hashing=all --base-href=/ComercialProtectionOrder/"
+},
+Ejm en el angular.json:
+"configurations": {
+	"master": {...},
+	"release": {...},
+	... etc
+}
+
+#####NOTAS SOBRE ANGULAR#####
+- Para usar *ngIf, *ngFor, pipes, se debe importar el modulo CommonModule
+- Para usar el evento ngSubmit en formularios se debe importar el modulo FormsModule (FormModule evita el refresh de la pagina, se utiliza para la aproximacion de formularios por template)
+- Angular's two-way binding syntax is a combination of square brackets and parentheses, [()]. 
+The [()] syntax combines the brackets of property binding, [], with the parentheses of event binding, (), as follows.
+- Para definir variables de entorno se hace en el archivo enviroment.ts (Desarrollo) - enviroment.prod.ts (Produccion)
+- Uso de @ViewChild para acceder a algun componente: A template reference variable as a string (e.g. query <my-component #cmp></my-component> with @ViewChild('cmp'))
+
+# Pipes
+- Los pipes se pueden encadenar y se ejecutan de izquierda a derecha.
+- Un Pipe impuro funciona exactamente igual que uno "normal", solo que son llamados en cada cambio del ciclo de detección, un click, el foco, el cambio del input etc, lo que significa que los datos que se muestren por pantalla van a estar siempre actualizados, cosa que puede no pasar con un Pipe "puro".
+Para convertir un Pipe normal en uno impuro, simplemente añadimos "pure: false" dentro del objeto de su anotación:
+@Pipe({
+  name: 'filtroCompletado',
+  pure: false //true esta por defecto
+})
+
+# Lazy Load
+- Para el lazy load se deben crear archivos de rutas por modulos e importarlos en dicho modulo y en el archivo de rutas principal hacer el llamado a los hijos (es decir a los diferentes modulos).
+- ng generate module mi-app --routing (Esta ultima instruccion genera el archivo xxx.module.tx y el xxx-routing.module.ts)
+
+# Con respecto a la proteccion de rutas de Angular Guard:
+- El metodo canLoad solo restringe que se pueda cargar un modulo, si se carga una primera vez, éste podria ser accedido. 
+Por lo anterior se deberia implementar tambien el metodo canActivate.
+
+# Formularios Por Template
+- Se debe importar el modulo FormModule.
+- Se trabaja con el objeto NgForm.
+- Se hace referencia al formulacio con una referencia local (referencia local en el <form #nombreReferencia="ngForm"> ...) utilizando el @ViewChild.
+- Los campos deben ir acompañados de los atributos ngModel y name.
+- Para controlar las validaciones de este tipo de formularios se debe implementar una directiva personalizada.
+- Las directivas personalizadas deben declaradas en el modulo que las contiene (en la parte de las declaraciones).
+- Se puede trabajar el ngModel con la sintaxis [()] para establecer y recuperar valores.
+
+# Formularios Reactivos
+- Se debe importar el modulo ReactiveFormModule.
+- Se debe crear una propiedad del tipo FormGroup.
+- Se debe colocar el atributo formGroup=nombrePropiedad del paso anterior en el (<form [formGroup]=nombrePropiedad> ...).
+- En cada campo del formulario se debe colocar el atributo formControlName, cuyo valor debe concodar con el establecido del lado de TypeScript.
+- El FormBuilder es un servicio (como todo servicio debe ser inyectado para usarlo), este objeto permite mapear los campos del formulario.
+
+# Ciclo de Vida
+- Al cargarse un componente primero se ejecuta el constructor y luego el ngOnInit
+- El ngOnDestroy se dispara en el caso de mostrar o no un componente con un *ngIf
+- El ngOnChange se dispara al pasar valores por medio de un @Input de un componente padre a un hijo, el ngOnChange funciona como interceptor de una propiedad decorada con @Input. Asi mismo, los cambios de una propiedad decorada con @Input puede ser interceptada con un setter.
+
+
+#####TIPS#####
+- Para crear clase que represente modelo JSON (response de un servicio rest) utilizar:
+https://app.quicktype.io/
+- Cuando sale un error de tipo read-only property, una posible solucion es:
+variable.propiedad = 'valor'; //posible error read-only
+(variable as any).propiedad = 'valor';
+
+- Para establecer un color aleatorio: 
+const color = "#xxxxxx".replace(/x/g, y=>(Math.random()*16|0).toString(16));
+
+- JWT (JSON WEB TOKEN, Forma de autenticacion pasiva) https://jwt.io/
+
+
+
+####Para vincular angular en Java#####
+Opcion 1:
+- Compilar o generar build correspondiente del proyecto de angular
+- Copiar los archivos del punto anterior y colocarlos en el webapp del proyecto web java (WAR)
+- Modificar el valor del tag <base href="/"> por <base href="./"> del archivo index.html
+- Generar componente Java y desplegar en servidor de aplicaciones y listo
+Opcion 2:
+- Compilar o generar build correspondiente del proyecto de angular
+- Colocar al mismo nivel de los archivos angular generados tras el build, el directorio WEB-INF
+- Verificar el context root en el archivo weblogic.xml presente en el directorio WEB-INF asi como en el index.html en el tag <base href= ....>
+- Para evitar problemas de direccionamiento (error 404) en el archivo web.xml presente en el directorio WEB-INF, colocar la pagina de bienvenida, como de error, apuntando al index.html
+- Ubicarse en el nivel del punto anterior y ejecutar el comando: jar cvf nombre_war-war.war .  
+- Desplegar el war generado en el servidor de aplicacion de java correspondiente
+- De ser necesario habilitar plugin en navegador para el manejo de CORS o configurar el CORS en el backend
+
+
+#####Instalacion de Angular Material#####
+ng add @angular/material
+
+
+#####Instalacion de Angular-flex#####
+Dentro del proyecto ejecutar
+npm i @angular/flex-layout
+npm i -s @angular/flex-layout @angular/cdk
+
+
+#####Instalacion de PrimeNG#####
+npm install primeng --save
+npm install primeicons --save
+npm install primeflex --save
+
+-Instalar para virtual scroll
+npm install @angular/cdk --save
+
+Tener en cuenta:
+Modificar el archivo angular.json
+Seccion assets van los recursos estaticos de la aplicacion
+Seccion styles colocar los estilos que usara PrimeNg:
+"node_modules/primeicons/primeicons.css"
+"node_modules/primeng/resources/themes/saga-blue/theme.css"
+"node_modules/primeng/resources/primeng.min.css"
+"node_modules/primeflex/primeflex.css"
+reiniciar terminal (ng serve)
+- Para los componentes que utilizan animaciones se debe importar el modulo BrowserAnimationModule
+
+
+#####Instalacion Para Manejo de Graficas#####
+npm install --save ng2-charts
+npm install --save chart.js
+
+
+#####Instalacion de FileSaver para guardar archivos#####
+npm install file-saver --save
+npm install @types/file-saver --save
+
+
+#####Backend Node#####
+Para crear un servidor que sirva como backend para pruebas
+npm install -g json-server
+Para subir un API Rest que simule un backend:
+json-server --watch db.json (Ubicandose en la ruta donde este el archivo db.json)
+
+
+#####Instalacion de CryptoJS para encriptaciones#####
+npm install crypto-js --save
+npm install @types/crypto-js --save
+
+
+#####Despligue de una app angular en apache#####
+- Generar el build correspondiente de la app de angular
+- En apache ubicar el directorio donde van las paginas (Ejm C:\Apache24\htdocs) y pegar los archivos generados en el build anterior
+- Modificar el valor del tag <base href="/"> por <base href="./"> del archivo index.html
+- En el archivo httpd.conf habilitar los modulos (LoadModule headers_module modules/mod_headers.so y LoadModule rewrite_module modules/mod_rewrite.so)
+- Copiar lo siguiente en el archivo httpd.conf en la seccion <Directory "${SRVROOT}/htdocs">
+	RewriteEngine On
+	RewriteBase /
+	RewriteRule ^index\.html$ - [L]
+	RewriteCond %{REQUEST_FILENAME} !-f
+	RewriteCond %{REQUEST_FILENAME} !-d
+	RewriteRule . index.html [L]
+	
+	Header add Access-Control-Allow-Origin "*"
+- De ser necesario habilitar plugin en navegador para el manejo de CORS
+	
+
+#################################################################################################################################################################
+########################################################################### React ###############################################################################
+#################################################################################################################################################################
+
+1. En react todo empieza con un functional component, el cual es una funcion. 
+2. Existen dos tipos de componentes, en base a funciones y los que son en base a clases. Se recomienda trabajar con esto (funciones) y no con clases.
+3. Los componentes se deben nombrar con Upper Camel Case por estandar
+
+
+# Instalaciones necesarias
+- Extenciones de Chrome
+	1. React Developer Tools
+	2. Redux DevTools
+	
+- Extensiones de VSC
+	1. ES7 React/Redux
+	2. Simple React Snippets
+
+
+# Creacion de proyecto React con Create (CRA WebPack):
+
+- Comando para crear una app React: npx create-react-app nombre_proyecto
+- npm start para subir la aplicacion
+- Con este esquema de creacion no ejecutar el comando eject
+- En el index.html en el id="root" es donde queda incrustada toda la aplicacion
+
+
+# Creacion de proyecto React con Vite:
+
+- Comando para crear una app React: npm create vite
+npm install Para instalar los paquetes ya que Vite no lo hace automaticamente
+npm run dev para subir la aplicacion
+
+
+-Cuando se requiera devolver un conjunto de elementos que estan en el mismo nivel jerarquico en un functional component, se pueden envolver con un Fragment, ya que siempre se debe devolver un nodo padre, o encerrados con <> ... </>
+-En jsx se pueden tener expresiones de javascript, excepto colocar un objeto directamente o un boolean, si se desea hacer esto, se deberia usar el JSON.stringify( obj ) para serializarlo y poderlo mostrar, sino, se genera un error.
+
+- Una propiedad numerica se envia desde el padre al hijo con { 123 }
+- Para el uso de PropTypes en CRA no se necesita hacer ninguna instalacion, con vite si se requiere ejecutar:
+npm install prop-types
+Ejm de su utilizacion, (Por fuera del functional component al final):
+FirstApp.propTypes = {
+	title:PropTypes.string.isRequired,
+	subTitle:PropTypes.number
+} 
+- Para el uso de defaultProps 
+Ejm de su utilizacion, (Por fuera del functional component al final):
+FirstApp.defaultProps = {
+	title:'No hay titulo',
+	subTitle:'No hay subtitulo'
+} 
+
+
+# Eventos
+https://es.reactjs.org/docs/events.html
+- Cuando se definan eventos tener en cuenta que empiecen con el rpefijo "on"
+
+
+# Hooks
+- Empiezan por 'use'... Ejm: useState
+- https://es.reactjs.org/docs/hooks-intro.html
+- No se deben poner condicionalmente los hooks
+- Un Hook es una función especial que permite “conectarse” a características de React. Por ejemplo, useState es un Hook que te permite añadir el estado de React a un componente de función.
+- Un Hook es una funcion que regresa algo y que puede recibir argumentos o no, asi se puede crear un hook personalizado para agrupar logica.
+
+- useState
+	El único argumento para el Hook useState() es el estado inicial, puede ser un primitivo, un array un objeto
+	Devuelve una pareja de valores: el estado actual y una función que lo actualiza
+	
+- useEffect
+	Recibe 2 argumentos, 1 una funcion callback de lo de se desea ejecutar, y 2 una lista de dependencias (opcional) que son las condicione spara volver a ejecutar el callback, si el 2 argumento se deja vacio el hook se dispara solo la primera vez q se crea el componente.
+	Al usar este Hook, le estamos indicando a React que el componente tiene que hacer algo después de renderizarse. React recordará la función que le hemos pasado (nos referiremos a ella como nuestro “efecto”), y la llamará más tarde después de actualizar el DOM. En este efecto, actualizamos el título del documento, pero también podríamos hacer peticiones de datos o invocar alguna API imperativa.
+
+- useRef
+	Devuelve un objeto ref mutable cuya propiedad .current se inicializa con el argumento pasado (initialValue). El objeto devuelto se mantendrá persistente durante la vida completa del componente.
+	Puede que estes familiarizado con las referencias principalmente como un medio para acceder al DOM. Si pasas un objeto de referencia a React con <div ref={myRef} />, React configurará su propiedad .current al nodo del DOM correspondiente cuando sea que el nodo cambie.
+	Sin embargo, useRef() es útil para más que el atributo ref. Es conveniente para mantener cualquier valor mutable que es similiar a como usarías campos de instancia en las clases.
+
+- useMemo
+	Devuelve un valor memorizado.
+	Pasa una función de “crear” y un arreglo de dependencias. useMemo solo volverá a calcular el valor memorizado cuando una de las dependencias haya cambiado.
+	const hero = useMemo(() => getHeroById(id), [id]);
+
+- useCallback
+	Devuelve un callback memorizado.
+	Pasa un callback en línea y un arreglo de dependencias. useCallback devolverá una versión memorizada del callback que solo cambia si una de las dependencias ha cambiado.
+	
+- userReducer
+	- Una alternativa a useState. Acepta un reducer de tipo (state, action) => newState y devuelve el estado actual emparejado con un método dispatch. (Si está familiarizado con Redux, ya sabe cómo funciona).
+	- useReducer a menudo es preferible a useState cuando se tiene una lógica compleja que involucra múltiples subvalores o cuando el próximo estado depende del anterior. useReducer además te permite optimizar el rendimiento para componentes que activan actualizaciones profundas, porque puedes pasar hacia abajo dispatch en lugar de callbacks.
+	- const [authState, dispatch] = useReducer(authReducer, [], init);//1-Reducer (funcion), 2-, 3-Inicializador (funcion)
+	- El argumento action del reducer tiene los valores del type (accion a ejecutar) y el payload (valor o valores)
+	
+	
+# React.memo 
+- Es un componente de orden superior.
+- React.memo() es un HOC que permite memorizar un componente en memoria, esto quiere decir:
+	React toma nuestro componente que envolvemos con React.memo, lo renderiza y lo almacena en memoria.
+	//Declaración React.memo(<Component />, ()=>{})
+	Ahora, antes del siguiente render de nuestro componente memorizado, React evaluará si las propiedades han cambiado, si existe un cambio, lo volverá a renderizar y grabar en memoria, de lo contrario, utilizará el que esta en la memoria.
+
+
+# Functional Components
+- Nunca se deberian llamarse funciones directamente dentro de un functional component, ya que cada vez q se renderice estaria llamando x funcion.
+- Cada vez que react detecta un cambio en el componente lo vuelve a ejecutar para redibujarlo
+- En una etiqueta no se pueden aplicar clases con el atributo class, debe usarse className.
+- En VSC se puede crear rapidamente el snipet con: escribiendo rafc + tab
+
+
+# Reducer
+- Es una funcion comun y corriente, por lo general se nombra con el prefijo "todo"
+- Debe ser una funcion Pura
+- Un reduce no debe tener efectos secundarios 
+- No debe realizar tareas asincronas
+- Debe retornar siempre un estado nuevo
+- No debe llamar a localStorage ni sessionStorage
+
+
+### Redux ###
+- Es un patron para crear nuevos estados basados en reducers.
+- Redux Toolkit facilita el trabajo con redux https://redux-toolkit.js.org/
+- Install Redux Toolkit and React-Redux
+>npm install @reduxjs/toolkit react-redux
+	1. Crear el Store
+	import { configureStore } from '@reduxjs/toolkit';
+	export const store = configureStore({
+	  reducer: { ... },
+	})
+	2. Crear el Provider, es decir proveer el store a los diferentes componentes de react
+    <Provider store={store}>
+      <App />
+    </Provider>
+	3. Crear el slice que es una función que acepta un estado inicial, un objeto de funciones de reducción y un "nombre de segmento".
+	4. Agregar el slice, en el store:
+	export const store = configureStore({
+	  reducer: {
+		counter: counterSlice.reducer
+	  },
+	})
+	5. Utilizar el store
+	useSelector() para seleccionar algo del store
+	useDispatch() para ejecutar una accion
+	const {miCounter} = useSelector(state => state.miCounter);
+	const dispatch = useDispatch();
+	<button type="button" onClick={() => dispatch(increment())}>
+		Incrementar
+	</button>
+	6. Solo si aplica
+	Cuando usamos un Redux Store básico, lo único que puedes hacer son actualizaciones síncronas sencillas por medio de una acción. Pero si quieres trabajar con lógica asíncrona para interactuar con el Store, necesitarás algo más. Aquí es donde entra redux-thunk. (middleware)
+	Paso a paso de un proceso con Redux-Thunk:
+		1. Verificar la acción entrante
+		Si es una acción regular, redux-thunk no hace nada y la acción es procesada por el reducer del Store.
+		
+		2. Si la acción es una función
+		Redux-thunk la invoca y usa los métodos dispatch y getState y cualquier argumento adicional.
+		
+		3. Después que la función se ejecute
+		El thunk envía la acción, la cual actualizará el estado como corresponde.
+		Ejm:
+		export const getPokemons = ( page = 0 ) => {
+			return async( dispatch, getState ) => {
+				dispatch( startLoadingPokemons() );
+				const { data } = await pokemonApi.get(`/pokemon?limit=10&offset=${ page * 10 }`);
+				dispatch( setPokemons({ pokemons: data.results, page: page + 1 }) );
+			}
+		}
+	
+
+
+# Creacion de Build:
+>npm run build
+- Se genera el directorio dist
+
+
+# Para probar se puede instalar un servidor http local
+npm install -g http-server
+- Ubicandose en el directorio dist, se puede ejecutar lo siguiente para subir la aplicacion
+>http-server -o
+- Importante decir que en react el modo stricto no esta habilitado en produccion, en desarrollo si.
+- Importante decir que en react el modo stricto al estar habilitado en desarrollo puede generar mas de una ejecucion al utilizar el hook useEffect, o el useLayoutEffect.
+
+
+# Archivo de Barril
+- Es un archivo agrupador de importaciones, se debe colocar dentro del directorio que contenga varios archivos que son importados, y se debe nombrar como index.js y debe contener los export de cada archivo en cuestion. Ejm: Se tiene el directorio components que contiene:
+export * from './Addcategory';
+export * from './GifGrid';
+export * from './GifItem';
+...
+Y al hacer la importacion del index.js se hace asi, Ejm: (No hay necesidad de colocar el ./components/index ya que es redundante)
+import { Addcategory, GifGrid } from './components';
+
+
+# Router (Este es un componente de nivel superior)
+# Instalacion de React Router
+>npm install react-router-dom@6
+- Se debe importar: import { BrowserRouter } from "react-router-dom";
+- Utilizar este higher component en el elemento mas arriba que consideremos de nuestra aplicacion.
+	en el main.jsx
+	ReactDOM.createRoot(document.getElementById('root')).render(
+	  <BrowserRouter>
+		<React.StrictMode>
+		  <MainApp />
+		</React.StrictMode>
+	  </BrowserRouter>
+	)
+- Definir en un archivo functional component las rutas principales de la Aplicacion ejm en un archivo AppRouter.jsx
+	<Routes>
+        <Route path="login" element={ <LoginPage /> } />
+        <Route path="/*" element={ <HeroesRoutes /> } />
+	</Routes>
+- Utilizar el functional component creado ejm:
+	<AppRouter />
+- Para navegacion por ejm desde un boton utilizar el hook useNavigate
+	const navigate = useNavigate();
+	navigate(-1); //-1 Para regresar
+- Para navegacion por ejm desde un enlace utilizar <Link>
+	<Link to={`/hero/${id}`}>
+		Mas...
+	</Link>
+- Para navegacion por ejm desde un redireccionamiento que se desee hacer utilizar <Navigate>
+	return <Navigate to={'/marvel'} />
+- El hook useParams() permite recibir parametros que vienen en el url, se utiliza al pasar parametros del tipo (/hero/${id}) cuya url se mapea con (/hero/:id)
+- El hook useLocation() es como un estado que siempre devuelve su URL actual. Si se cambia la URL, useLocation también se actualizará, se utiliza al pasar parametros de consulta del tipo (?some=search-string)
+
+
+# Rutas Privadas y Publicas (Este tambien es un componente de nivel superior)
+- Crear el higher component o componente de nivel superior (Basicamente un functional component) ejm "PrivateRoute.jsx", pasandole como argumento un children que reseprentaria los hijos que este componente tendria (es decir las rutas privadas que este contendria)
+- En este componente se puede validar por ejm si el usuario esta logueado para acceder a las rutas privadas.
+- Utilizar este componente, colocarlo envolviendo las rutas que se vayan a dejar privadas o publicas
+<Route path="/*" element={
+  <PrivateRoute>
+	<HeroesRoutes />
+  </PrivateRoute>
+}/>
+
+
+# Context (Este es un componente de nivel superior)
+- Se debe crear en un archivo por ejm "AuthContext.jsx", puede ser dentro de un directorio llamado por ejm "context"
+	Con lo siguiente: export const AuthContext = createContext(); // import { createContext } from "react";
+- Crear el higher component o componente de nivel superior (Provider) ejm "AuthProvider.jsx", pasandole como argumento un children que reseprentaria los hijos que este componente tendria
+	Con lo siguiente: importar el elemento context creado en el punto anterior
+	return (
+		<AuthContext.Provider value={{...authState, login, logout }}>
+			{ children }
+		</AuthContext.Provider>
+	);
+- Colocar el higher component creado en el elemento mas arriba que consideremos de nuestra aplicacion
+	Con lo siguiente: Se toma el componente raiz, ejm MainApp y se reemplaza el fragment por el <AuthProvider> creado en el punto anterior
+- Utilizar donde se requiera el useContext... const context = useContext(AuthContext); //Se puede tambien desestructurar
+
+
+# Material UI
+- Instalacion:
+>npm install @mui/material @emotion/react @emotion/styled
+- Colocar fuentes respectivas de material ui, adicionar lo siguiente en el index.html
+<link
+  rel="stylesheet"
+  href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
+/>
+- Colocar iconos, instalarlos mediante:
+>npm install @mui/icons-material
+- Crear el higher component o componente de nivel superior ejm "AppTheme.jsx", pasandole como argumento un children que reseprentaria los hijos que este componente tendria
+- Retornar:
+<ThemeProvider theme={theme}>
+  <CssBaseline />
+  {children}
+</ThemeProvider>
+- Utilizar en el componente donde se requiera que éste sea envuelto por el componente creado en el punto anterior, ejm:
+<AppTheme>
+  <AppRouter />
+</AppTheme>
+
+
+# Paquetes de terceros
+>npm install query-string //Para Parse and stringify URL query strings
+
+
+# Axios para consumo de peticiones http
+>npm install axios
+
+
+# Validador de Strings
+>npm install validator
+
+
+#Para instalar libreria para manejo de fechas (moment)
+>npm install moment --save
+
+
+# Para instalar libreria para manejo de mensajes (sweet alert)
+https://sweetalert2.github.io/
+>npm install sweetalert2
+
+
+# Sitio para subir imagenes o videos
+https://cloudinary.com/
+https://api.cloudinary.com/v1_1/djpwklufs/upload
+
+
+
+# Testing
+
+Instalación y configuracion de Jest + React Testing Library
+En proyectos de React + Vite
+
+Instalaciones:
+yarn add --dev jest babel-jest @babel/preset-env @babel/preset-react 
+yarn add --dev @testing-library/react @types/jest jest-environment-jsdom
+
+Opcional: Si usamos Fetch API en el proyecto:
+yarn add --dev whatwg-fetch
+
+Actualizar los scripts del package.json
+"scripts: {
+  ...
+  "test": "jest --watchAll"
+
+Crear la configuración de babel babel.config.js
+module.exports = {
+    presets: [
+        [ '@babel/preset-env', { targets: { esmodules: true } } ],
+        [ '@babel/preset-react', { runtime: 'automatic' } ],
+    ],
+};
+
+Opcional, pero eventualmente necesario, crear Jest config y setup:
+jest.config.js
+module.exports = {
+    testEnvironment: 'jest-environment-jsdom',
+    setupFiles: ['./jest.setup.js']
+}
+
+jest.setup.js
+// En caso de necesitar la implementación del FetchAPI
+import 'whatwg-fetch'; // <-- yarn add whatwg-fetch
+
+
+#################################################################################################################################################################
+########################################################################## FIREBASE #############################################################################
+#################################################################################################################################################################
+
+https://firebase.google.com/
+>npm install firebase
+- En la pagina https://firebase.google.com/ crear un proyecto sin hosting y sin google analitics y copiar el codigo de </>
+- En la opcion Compilacion seleccionar Firestore Database para crear la base de datos (No Relacional), con las opciones por defecto.
+	No olvidar editar las reglas y establecer lo siguiente: allow read, write: if request.auth != null;
+
+
+
+#################################################################################################################################################################
+############################################################################ HTML5 ##############################################################################
+#################################################################################################################################################################
+
+Etiquetas estructurales:
+
+- <header>
+- <nav>
+- <section>
+- <article>
+- <footer>
+
+Nuevas entradas en formularios
+
+- color, date, datetime, datetime-local, email, month, number, range, search, tel, time, url, week
+
+Nuevos atributos en los tipos de entrada HTML5
+
+- autocomplete, autofocus, list, max, min, multiple, pattern, required, step, placeholder
+
+	
+Compatibilidad:
+
+- Para hacer funcionar una aplicacion HTML5 en todos los navegadores que no soportan todas las caracteristicas de HTML5, se pueden utilizar librerias de apoyo:
+<script src="scripts/jquery.min.js"></script>
+<script src="scripts/modernizr-custom.js"></script>
+<script src="scripts/webshim/polyfiller.js"></script>
+
+	
+	
+#################################################################################################################################################################
+############################################################################### CSS3 ############################################################################
+#################################################################################################################################################################
+
+Revisar en primera medida https://caniuse.com/ para temas de compatibilidades
+
+
+Prioridades:
+#Los estilos se aplican con la siguiente prioridad:
+1. Los definidos en el atributo style del elemento HTML
+2. Los definidos en el documento HTML <style> ... </style>
+3. Los definidos en un archivo de tipo css
+4. Tambien considerar que se aplica el estilo mas especifico que exista sobre algun elemento, Ejm:
+#saludo h1{ //Se aplica este ya que es mas especifico
+	...
+}
+h1 {
+	...
+} 
+- La prioridad se puede modificar adicionando !important
+
+
+Selectores:
+
+#Selector Universal * 
+- Aplica a todos los elementos HTML *{...}
+
+#Selector por etiqueta
+- h1{...}, p{...}, footer a{...}, etc
+
+#Selectores id
+- Se utiliza para especificar el estilo de un elemento unico en la pagina web actual
+- Para definir un ID de css se utiliza el operador #
+- Se aplica al atributo id en los elementos HTML
+
+#Selectores class
+- Se utiliza para especificar el estilo de un grupo de elementos
+- Para definir una clase css se utiliza el operador punto (.)
+- Se aplica al atributo class en los elementos HTML
+
+#Selectores tipo sibling
+- div > p (> Elementos hijos inmediatos)
+- div + p (+ Elementos adyacentes (osea mas cercano) posteriores)
+- div ~ p (~ Elementos en el mismo nivel posteriores)
+
+#Selectores por atributo
+- a[href^=http] (Elemento a del atributo href que comience con http)
+- a[href$=".html"] (Elemento a del atributo href que termine con http)
+- input[type="text"]
+
+
+#Selectores n-child
+
+
+Colores:
+#Definiciones de colores
+-#FF0000 (Hexadecimal)
+-#F00 (Hexadecimal a 3 digitos ya que se repite la F el 0 y el ultmo 0 de #FF0000)  
+-rgb(255,0,0) (RGB Decimal rgb(r, g, b))
+-rgb(10%,20%,30%) (RGB en porcentaje rgb(%r, %g, %b))
+-red (Por nombre de color)
+-rgba(255,0,0,0.5) (el ultimo valor alfa indica la opacidad, el valor debe ser entre 0 y 1)
+-hsl(120,65%,75%) (El primero representa el grado del color, los 2 ultimos expresan saturacion e iluminacion expresada en %)
+-hsla(120,65%,75%,0.5)
+
+
+#Degradados:
+linear-gradient(to  bottom, blue, white) (El degradado va de arriba a abajo comenzando con un color azul terminando en color blanco)
+radial-gradient(red, yellow, rgb(30,144,255)) (El degradado va del centro rojo, enseguida un tono amarillo y la parte externa un azul)
+
+
+Fuentes:
+- La sintaxis para utilizar las fuentes es @font-face, el nombre del font-family que se defina aqui dentro, es el mismo que se colocara en el font-family donde se vaya a utilizar
+- Se pueden descargar fuentes personalizadas de GoogleFonts
+
+
+Flexible-Box:
+#La sintaxis para utilizar flex-box es: display:box o display:inline-box
+- Al asignar esta propiedad a un elemento permite controlar el flujo y la posicion de los elementos hijos.
+- Los elementos hijos pueden tener propiedades como box-align (horizontal, vertical), box-pack (start, end, center, justify), box-flex (Define una proporcion), box-direction, box-ordinal-group
+
+
+Bordes:
+#Se utiliza la propiedad border-radius en px, si este se aplica a un div, generara un elemento con bordes redondeados.
+
+
+Fondos Multiples:
+- background-imgage:url(imagen1), url(imagen2)
+- background-position:left top (le aplica a la imagen1), right bottom (le aplica a la imagen2)
+- background-color:#fff
+- background-repeat:no-repeat
+
+
+Transformaciones:
+- rotacion transform:rotate(45deg) grados
+- traslacion transform:translate(despx, despy)
+- inclinacion transform:skew(gradosx, gradosy)
+- escalamiento transform:scale(escalarx, escalary)
+
+
+Transiciones:
+- transition: all 2s
+- transition-property transition-property:all
+- transition-duration transition-duration:0.5s
+- transition-timing transition-timing:ease-in
+- transition-delay transition-delay:1s (retraso al animar)
+
+
+Animations:
+- animation-name: desplazamiento @keyframes desplazamiento{...}
+
+
+Padding:
+- Margen interna
+
+
+Margin:
+- Margen Externa
+
+
+Posicionamiento:
+- float permite posicionar los elmentos de tipo block por ejm a la izquierada con left uno al lado de otro o a la derecha con right
+- clear: both permite limpiar al elemento al cual se le esta aplicando para que no tenga en cuenta los elementos float left y float right
+- Para centrar un elemento de tipo block se puede utilizar margin: 0px auto, Para centrar algo horizontalmente en navegadores modernos, usa display: flex; justify-content: center;
+- position: relative (Posicionamiento por defecto)
+- position: absolute (Permite mover un elemento a cualquier lugar de la pagina adicionando tambien las propiedades top, left, etc) esta propiedad acompaña al scroll
+- position: fixed o sticky (Permite mover un elemento a cualquier lugar de la pagina adicionando tambien las propiedades top, left, etc) esta propiedad NO acompaña al scroll queda fija en el lugar que se establezca
+
+
+Pseudoclases:
+- En VSC se puede utilizar : enseguida del atributo para ver las pseudoclases que se pueden utilizar, Ejm ul li : {...}
+- Para enlaces por ejm, link, hover, active, visited, etc
+- Para inputs por ejm focus, etc
+- Para listas por ejm first-child, etc
+
+
+MediaQuery:
+# Definicion de estilos para diseño responsive
+- Se pueden definir con @media dentro de la hoja de estilos
+- Se pueden definir en una hoja de estilos independiente adicionando el atributo media
+Ejm: <link rel="stylesheet" href="css/moviles.css" media="only screen and (max-width:480px) and (min-width:0px)">
+- Importante definir el meta: <meta name="viewport" content="width=device-width"> para aplicar estilos segun el ancho del dispositivo no del navegador
+
+
+Flexbox:
+# Contenedor
+# Para trabajar con flexbox se deben colocar los elementos a maquetar dentro de un div que funciona como contenedor, el contenedor debe tener la propiedad display:flex o inline-flex
+- display : flex es como tener un float : left es decir los elemenos se ubican de manera horizontal uno al lado del otro
+- display : flex ocupa el ancho maximo
+- display : inline-flex ocupa el ancho o se adapta al contenido
+- flex-direction : row o column (row es el comportamiento por default)
+- flex-wrap : wrap o nowrap (nowrap es el comportamiento por default), se debe usar wrap para que no se desborden los elementos del contenedor
+- flex-flow : row wrap (es la combinacion en una sola, de flex-direction y flex-wrap)
+- justify-content Se utiliza para alinear los elementos horizontalmente
+- align-items Se utiliza para alinear los elementos verticalmente
+- El contenedor puede o no estar dentro de un div general
+
+# Elementos del contenedor
+- order : 1 Se aplica a los elementos que estan dentro del contenedor, se pueden organizar segun se desee
+- flex-grow : 1 Nomalmente = 1 y sirve para que cada elemento al interior del contenedor ocupe el mismo espacio, se puede tambien asignar de forma independiente a cada elemento, el flex-grow como tal sirve para especificar que cantidad de espacio puede ocupar cada elemento
+- flex-shrink : 0 Sirve para reducir el espacio de un elemento es como el opuesto del flex-grow
+- flex-basis : calc((100% / 3) - 68px) El flex-basis sirve para definir un tamaño (como si fuera un width) y con la funcion calc se pueden hacer operaciones
+- align-self Da una alineacion vertical al elemento que esta dentro del contenedor
+
+
+Grid Layout:
+# Contenedor
+- display : grid
+- Se define un div que envuelve el grid a construir con display:grid
+- grid-template-columns: 50% 45% Permite definir 2 columnas para el grid 
+- grid-template-columns: repeat(4, 1f) Permite definir 4 columnas de una fraccion para el grid
+- grid-gap : 10px Permite establecer un espacio entre elementos del grid
+- grid-template-rows: 1fr 1fr 1fr Permite definir 3 filas para el grid
+
+# Elementos del Grid
+- grid-column-start : 1
+- grid-column-end : 3
+- Las 2 propiedades anteriores expandirian un elemento a nivel de columnas
+- grid-column : 1 / 3 Esta propiedad permite el mismo efecto de las 2 propiedades anteriores
+- grid-row-start : 2
+- grid-row-end : 4
+- Las 2 propiedades anteriores expandirian un elemento a nivel de filas
+- grid-row : 2 / 4 Esta propiedad permite el mismo efecto de las 2 propiedades anteriores
+
+# En un elemento del grid se puede utilizar flex para alinear horizontal y verticalmente contenido, Ejm:
+#cabecera{
+	display:flex;
+	justify-content:center;
+	align-items:center;
+	grid-colum: 1 / 6;
+}
+
+#Grid Template Area
+- En el contenedor se define el template con, Ejm:
+- grid-template-areas : 
+ "cabecera cabecera cabecera cabecera cabecera"
+ "menu menu menu menu menu"
+ "contenido contenido contenido contenido lateral"
+ "pie pie pie pie pie"
+ 
+- En los elementos del contenedor se debe establecer el identificador correspondiente, Ejm:
+- grid-area: cabecera;
+- grid-area: pie;
+
+#################################################################################################################################################################
+############################################################################### SASS ############################################################################
+#################################################################################################################################################################
+
+Es un pre-procesador CSS https://sass-lang.com/
+
+# Instalacion
+- npm install -g sass
+
+
+# Compilacion
+- Ejecutar el comando: sass --watch estilos.scss styles.css  //El watch es para que tome los cambios automaticamente
+
+
+# Variables
+- Empiezan por $, ejem:
+$base-color: #c6538c;
+$border-dark: rgba($base-color, 0.88);
+
+.alert {
+  border: 1px solid $border-dark;
+}
+
+
+# Anidacion
+- Se pueden tener elementos al interior de otros Ejm:
+.caja {
+	...
+	h1 {
+		...
+	}
+}
+
+
+# Modulos
+- El contenido de un archivo .scss se puede usar en otro archivo scss
+Ejm: Existen 2 archivos llamados estilos.scss y _base.scss
+En el archiv0 estilos.scss se pue llamar el contenido del archivo _base.scss mediante @use:
+@use 'base';
+
+
+# Mixins
+- Son funciones llamadas (con o sin parametros) mediante @include, Ejm:
+@mixin crearBordes($color, $size, $shadow) {
+	border: $size solid $color;
+	border-radius: $size;
+	box-shadow: 0px 0px $size $shadow;
+}
+.listado {
+	@include crearBordes(green, 5px, black);
+}
+
+
+# Herencia
+- Son como los mixins pero sin parametros, se llaman mediante @extends, Ejm:
+%alert{
+	color:white
+}
+.alert-danger{
+	@extends %alert;
+	background: red;
+}
+.alert-success{
+	@extends %alert;
+	background: green;
+}
+
+
+# Operadores
+- Tales como + - * / Ejm:
+.caja {
+	float:left;
+	width: 200px / 900px * 100%; //Daria un ancho en porcentaje
+	margin: 10px;
+}
+
+
+# Condicional - if
+- Se utiliza @if, @elese, @else if, Ejm:
+h1 {
+	@if $color-fondo == #ccc {
+		color: black;
+	} @else if $color-fondo == black {
+		color: white;
+	} else {
+		color: lightsalmon;
+	}
+}
+
+
+# Bucle 
+- Se utiliza for, each, while, Ejm:
+$contador: 1;
+@for $contador from 1 through 10 {
+	.listado ul li : nth-child(#{$contador}) {
+		font-size: $contador * 2px;
+	}
+}
+
+
+#################################################################################################################################################################
+############################################################################### LESS ############################################################################
+#################################################################################################################################################################
+
+Es un pre-procesador CSS https://sass-lang.com/
+
+# Instalacion
+- npm install -g less
+
+
+# Compilacion
+- Ejecutar el comando: lessc estilos.less styles.css
+
+
+# Variables
+- Empiezan por @, ejem:
+@bgColor : lightblue;
+@b : body;
+
+@{b} { // Equivale al body {...}
+	background : @bgColor;	
+}
+
+
+# Anidacion
+- Se pueden tener elementos al interior de otros Ejm:
+.informacion {
+	ul {
+		a {
+			color : green;
+			font-size : 18px;
+		}
+	}
+}
+
+
+# Mixins
+- Son funciones llamadas (con o sin parametros) mediante ., Ejm:
+.sombras(@size) {
+	box-shadow: 0px 0px @size gray;
+}
+.informacion {
+	.sombras(5px);
+}
+
+
+# Operadores
+- Tales como + - * / Ejm:
+h1 {
+	font-size : 30px + 7px;
+}
+
+
+# Condicionales
+- Ejm:
+.textoNegro (@value) when (@value=true) {
+	color: black;
+}
+h1 {
+	color: blue;
+	.textoNegro(true);
+}
+
+
+#################################################################################################################################################################
+########################################################################## BOOTSTRAP ############################################################################
+#################################################################################################################################################################
+
+#####Bootstrap#####
+De la pagina https://getbootstrap.com/ copia la ruta de css
+Ejm: <!-- CSS only -->
+<!-- CSS only -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+Y pegarla en el archivo index.html en la seccion correspondiente
+
+
+#################################################################################################################################################################
+############################################################################ MONGODB ############################################################################
+#################################################################################################################################################################
+
+# Download MongoDB Community Server https://www.mongodb.com/try/download/community
+- Ver la version de mongo instalada mongod --version
+- Si se instala mongodb desde un instalador binario:
+
+	(1) Install MongoDB
+	(2) Add bin to path
+	(3) Create c:\data\db
+	(4) Create c:\data\log
+	(5) Create c:\data\mongod.cfg with contents ..
+
+	systemLog:
+		destination: file
+		path: c:\data\log\mongod.log
+	storage:
+		dbPath: c:\data\db
+
+	(6) To create service that will auto start on reboot .. RUN AS ADMIN ..
+
+	sc.exe create MongoDB binPath= "\"C:\Program Files\MongoDB\Server\3.4\bin\mongod.exe\" --service --config=\"C:\data\mongod.cfg\"" DisplayName= "MongoDB" start= "auto"
+
+- Para subir mongodb si no esta levantado ejecutar por consola mongod.exe
+- Al crear una BD en mongo se debe crear si se desea el esquema o los esquemas que se vayan a trabajar, ejm:
+	db.createCollection("usuarios", {
+		validator: {
+			$jsonSchema: {
+				bsonType: "object",
+				required: [ "name", "email", "phone" ],
+				properties: {
+					name: {
+						bsonType: "string",
+						description: "must be a string and is required"
+					},
+					email: {
+						bsonType: "string",
+						description: "must be a string and is required"
+					},
+					phone: {
+						bsonType: "int" ,
+						description: "must be a number and is required"
+					},
+					status: {
+						bsonType: "bool" 
+					},
+					dateCreated:{
+						bsonType: "timestamp"
+					},
+					dateModified:{
+						bsonType: "timestamp"
+					}				
+				}
+			}
+		}
+	})
+
+	db.usuarios.createIndex( { "email":1 }, { unique: true } )
+
+	db.usuarios.insertOne({
+		name:"alicia",
+		email:"a@a.com",
+		phone:123,
+		status:true
+	})
+- En mongo se conoce como una coleccion al simil de (Una Tabla de una BD relacional)
+- Luego se deben crear los modelos asociados al esquema correspondiente
+
+# Comandos en mongosh
+use database // Permite crear/seleccionar una BD (si se crea debe crearse una coleccion para que aparezca la BD con el comando show dbs)
+
+# En mongo las funciones CRUD tienen la siguiente sintaxis: nombre_bd.nombre_colleccion.funcionCRUD
+- Lasfunciones CRUD pueden ser ejecutadas de forma unica o de forma masiva
+- insertMany: Inserta multiples documentos en una coleccion. nombre_bd.nombre_colleccion.insertMany([{...},{...},{...}])
+- find: Selecciona documentos en una coleccion y retorna un cursor db.collection.find(query, projection) el segundo argumento determina que campos son retornados en los documentos encontrados
+- findOne: Retorna un solo elemento, se puede retornar un campo con: db.collection.find(query).campo 
+- replaceOne: Reemplaza un unico documento en una coleccion basado en el filtro db.collection.replaceOne(filter, replacement, options)
+- update: Modifica un o varios documentos existentes en una colleccion, para varios tener en cuenta el parametro "multi" db.collection.update(query, update,
+ options)
+
+# Otros comandos
+- db.collection.drop() sirve para eliminar una coleccion
+- db.dropDatabase() sirve para eliminar una BD
+
+
+
+#################################################################################################################################################################
+############################################################################# SPRING ############################################################################
+#################################################################################################################################################################
+
+# Si no se trabaja con el IDE Spring Tool Suite se puede trabajar con IntelliJ, y luego se puede ingresar a la pagina: https://start.spring.io/ para generar una estructura de proyecto
+
+
+#################################################################################################################################################################
+########################################################################## JAKARTA EE9 ##########################################################################
+#################################################################################################################################################################
+
+
+# Servlet
+- El uso de HttpSession permite guardar hasta objetos en sesion del lado del servidor
+- Al realizarse un request al servidor automaticamente se genera la cookie JSESSIONID
+- Se puede redireccionar a otro recurso con: un redirect, o un dispacher dependiendo del escenario.
+- Basicamente el Redirect, Se refiere a que la solicitud se redirige a un recurso diferente, se crea una nueva solicitud.
+- Basicamente el Forward, Los objetos de solicitud y respuesta seguirán siendo el mismo objeto después del reenvío. Si se requiere el ámbito anterior, o no es necesario informar al usuario, pero la aplicación también desea realizar una acción interna.
+- Al crearse un Listener se debe marcar con la anotacion @WebListener e implementar las interfaces ServletContextListener, ServletRequestListener, HttpSessionListener
+- Los listener estan orientados a cualquier request y cualquier servlet
+- Al crearse un filtro se debe marcar con @WebFilter e implementar la interface Filter (Metodo doFilter - Tareas a realizar antes y/o despues de la ejecucion del servlet).
+- En @WebFilter se deben definir las rutas de los servlet que pasaran por el filtro.
+- Los filtros estan orientados exclusivamente a los request. Y se puede mapear en ellos, en que servlet se van a ejecutar.
+
+
+# JSP
+- JSTL, para su utilizacion se debe configurar la respectiva dependencia en el pom.xml y en el archivo .jsp colocar:
+<%@ taglib uri="http://java.sun.com/jstl/core" prefix="c" %>
+- <jsp:include page="layout/header.jsp" /> Permite colocar contenido de un jsp en otro jsp.
+
+
+# CDI
+- De debe crear el archivo beans.xml dentro del directorio /src/main/webapp/WEB-INF del proyecto web (war) y agregar la dependencia correspondiente para utilizar CDI
+- En el archivo beans.xml se puede configurar como se desea hacer el descubrimiento de los beans.
+- El registro de un bean se hace automaticamente en el contexto CDI
+- Tambien se puede registrar un bean mediante metodo con @Produces (Utilizado para inyectar un objeto propio de java o de un tercero, Ejm Connection, Logger)
+- Inyectar un bean dentro de otro con @Inject
+- Manejo de contextos @Depend es por defecto, tambien estan @RequestScoped, @SessionScoped (Debe implementarse la interface serializable), @ConversationScoped (Debe implementarse la interface serializable), @ApplicationScoped
+- Si se inyecta un bean que no es serializable en un contexto serializable se debe colocar como transient.
+- Si no se define el contexto de un bean, como el default es @Depend, el contexto que se toma es el del bean donde se esta haciendo la inyeccion.
+- @Named permite dar un nombre al bean
+- Si existe mas de una implementacion de una interface, las implementaciones que no se vayan a usar se pueden anotar con @Alternative excepto la que se vaya a autilizar (Inyectar)
+- Si existe mas de una implementacion de una interface, se puede considerar el uso de @Named para identificar que implementacion se va a utilizar (Inyectar)
+- Si existe mas de una implementacion de una interface, se puede crear una anotacion personalizada y anotarla con @Qualifier, y esta colocarla en la implementacion que se va a utilizar (inyectar)
+- Para inyectar recursos del servidor como por ejm un datasource se anota el atributo con @Resource
+- Se puede crear una anotacion personalizada y anotarla con @Stereotype para agrupar un conjunto de anotaciones
+- Se puede utilizar la anotacion @Disposes para cerrar recursos
+- El bean tiene en su ciclo de vida @PostConstruct que se ejecuta despues del constructor y @PreDestroy que se ejecuta cuando se destruye o finaliza el contexto del bean.
+- Se pueden utilizar interceptores para ejecutar tareas antes y despues de la ejecucion de un metodo, para ello se deb:
+	1. Crear anotacion personalizada con @InterceptorBinding
+	2. Crear clase interceptora enlazandola (anotandola) con la anotacion personalizada creada en el punto 1
+	3. Dentro de la clase del punto 2 crear un metodo anotado con @AroundInvoke que debe devolver un Object
+	4. En el metodo creado en el punto 3, llamar a InvocationContext.proceed(), que se encarga de ejecutar el o los metodos interceptados.
+	5. Anotar la clase o los metodos en especifico que vayan a ser interceptados con la anotacion creada en el punto 1.
+	6. Registrar en el archivo beans.xml el o los interceptores creados.
+
+
+#JPA
+- Tras consultar con el metodo find(), este deja en cache el objeto consultado por lo que no genera una nueva consulta sobre la BD.
+- En una consulta se puede utilizar un dto para asignar los valores de la entidad, Ejm em.createQuery("select new org.mipaquete.ClienteDto(c.nombre, c.apellido) from Cliente c", ClienteDto.class); Se debe colocar el package completo del Dto, sino genera un error.
+- Para desarrollo se puede utilizar la propiedad drop-and-create en el archivo persistence.xml para que se eliminen las tablas y se vuelvan a crear
+- Se puede utilizar un archivo que debe llamarse import.sql dentro de /src/main/resources para cargar data automaticamente
+- Con @PrePersist y @PreUpdate se puede generar informacion de campos como por ejm un auditoria de fechas de creacion y de modificacion.
+- @Embedable y @Embeded son para adicionar atributos a una entidad.
+
+# Relaciones Jpa
+- Los atributos de tipo list deben ser inicializados, no deben ser null
+- @JoinColumn permite definir un nombre de FK personalizado
+- En una relacion unidireccional de tipo @OneToMany sin el @JoinColumn se crea una tabla intermedia
+- @JoinColumn y mappedBy nunca deben ir sobre un mismo atributo
+- Una relacion bi-direccional es cuando una entidad tiene un atributo de la otra con la que esta relacionada, y viceversa. Y ambas tienen en dicho atributo el @OneToOne @OneToMany @ManyToOne @ManyToMany segun corresponda.
+- Es importante que al momento de hacer una actualizacion o eliminacion el objeto en cuestion se encuentre en el contexto de jpa.
+- @OneToMany @ManyToMany por defecto son FetchType.LAZY
+- @ManyToOne @OneToOne por defecto son FetchType.EAGER
+- Para optimizar consultas y no generar consultas separadas, se debe utilizar en un createQuery un "join fetch"
+- En una consulta, para el caso de una entidad que este relacionada con 2 listas de entidades o mas, se lanza un error de multiples bags, esto sucede si dichas listas son traidas de tipo EAGER, o aun, si en el query se utiliza el JOIN FETCH. La forma de solventar este error, es cambiando las listas en cuestion por el tipo Set (List -> Set), lo cual no es recomendable, la forma recomendable seria hacer consultas aparte para un escenario de este tipo.
+
+
+#EJB
+- Un EJB Stateless comparte la misma instancia para todos los clientes, no tiene contexto (no aplica ningun contexto CDI), no mantiene un estado
+	Por ejemplo, Si se colocan 2 instancias de un EJB Stateless en un mismo cliente (ejm un servlet), estas son iguales, es decir hay una unica instancia.
+	Antes varias peticiones a un servlet por ejm, la unica instancia que existe se mantiene.
+- Un EJB Stateful puede mantener una conversacion con el contexto
+	Por ejemplo, Si se colocan 2 instancias de un EJB Stateful en un mismo cliente (ejm un servlet), estas son diferentes.
+	Ante varias peticiones a un servlet por ejm, cada instancia se mantiene (quedan estaticas)
+- Un EJB Stateful o Stateless se debe inyectar con @Inject y no con @EJB, si para el ejb se maneja algun contexto CDI, es decir, si el EJB inyecta algun componente CDI.
+
+- Si no se utiliza la anotacion @EJB o un @Inject para inyectar un ejb, se puede llamar el ejb mediante el InitialContext por el JNDI
+	Para interface local el JNDI empieza por java:global/....
+	Para interface remota el JNDI empieza por ejb:/....
+	La interface local definida con @Local es para cuando los ejb son accedidos desde el mismo servidor de aplicaciones
+	La interface remota definida con @Remote es para cuando los ejb son accedidos desde un cliente fuera del servidor de aplicaciones donde estan contenidos los ejb. El cliente debe tener como dependencia el .jar donde esta el proyecto ejb remoto y la dependencia para comunicacion con ejb para el servidor de aplicaciones segun corresponda
+	Para el uso de la interface remota no olvidar serializar los objetos
+	Se puede utilizar un archivo jndi.properties (debe llamarse asi y estar dentro de la carpeta /src/main/resources del proyecto ejb) para establecer los valores del InitialContext
+	
+	
+#JSF3
+- En Jakarta EE 9 la anotacion @ManagedBean ha quedado deprecated, debe utilizar una anotacion del contexto CDI
+- El controlador de una pagina jsf se puede anotar con @Model que tiene inmersas las anotaciones @RequestScope y @Named
+- Las peticiones en Jakarta server faces pasan por el servlet FacesServlet
+- Un h:commandButton o un h:commandLink debe estar dentro de un h:form y en el action pueden llamar a una vista .xhtml o un metodo del controlador
+- Para pasar un parametro por get se puede usar h:link para enviar a una vista con el outcome
+	Ejm: en un index.xhtml se tiene ...
+	<h:link value="xx" outcome="form">
+		<f:param name="id" value="obj.id" />
+	</h:link>
+	en un form.xhtml se recibe con ...
+	<f:metadata>
+		<f:viewparam name="id" value="#{controller.id}" />
+	</f:metadata>
+- Para listas por lo general se debe usar un converter, es decir, una clase propia que implemente la interface Converter y utilizarlo dentro del campo h:selectOneMenu correspondiente con <f:converter binding="converter"
+- La clase converter creada tambien se debe anotar con una anotacion del contexto CDI
+- Se puede utilizar un archivo de idiomas messages.properties (debe llamarse asi y estar dentro de la carpeta /src/main/resources del proyecto web)
+	Por ejm se pueden tener messages.properties, messages_es.properties messages_en.properties para idiomas español e ingles
+	
