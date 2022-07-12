@@ -12,6 +12,7 @@ git checkout -- . //Reconstruye los fuentes al ultimo commit
 git branch -M main //Renombra la rama donde nos encontramos y le cambia el nombre a main
 git remote add origin https://github.com/Divier/seccion_7_curso_angular_gifs.git (Este ya debe existir, crear previamente en github.com)
 git push -u origin main
+git restore --staged index.html  //Permite deshacer un git add
 #Generar version
 git tag -a v1.0 -m "Fin base angular"
 #Ver la version
@@ -45,6 +46,82 @@ Extensiones
 
 - Abrir consola Crtl+Ñ
 - Buscar Archivo Ctrl+P
+
+
+#################################################################################################################################################################
+########################################################################### Node ################################################################################
+#################################################################################################################################################################
+
+#####Backend Node#####
+Para crear un servidor que sirva como backend para pruebas
+npm install -g json-server
+Para subir un API Rest que simule un backend:
+json-server --watch db.json (Ubicandose en la ruta donde este el archivo db.json)
+
+# Crear archivo package.json
+>npm init -y
+
+
+# Instalar paquete para que tome los cambios en caliente
+>npm i nodemon -g
+
+
+# Para ejecutar un archivo javascript
+>nodemon index.js 
+
+
+#En el package.json se pueden configurar los script a ejecutar
+"scripts": {
+    "dev": "nodemon index.js", //>npm run dev
+    "start": "node index.js" //>npm start
+},
+
+
+# Para instalar express (Framework)
+>npm i express
+
+
+# Para utilizar variables de entorno (dotenv)
+>npm i dotenv
+
+
+# Para instalar express validator (para validar campos)
+>npm i express-validator
+
+
+# Middlewares
+- Son funciones con esta firma (req, res, next)
+- Deben llamar al metodo next() si todo sale bien
+
+
+# Status Codes
+https://www.restapitutorial.com/httpstatuscodes.html
+
+
+# Mongoose
+Mongoose es una librería para Node.js que nos permite escribir consultas para una base de datos de MongooDB, con características como validaciones, construcción de queries, middlewares, conversión de tipos y algunas otras, que enriquecen la funcionalidad de la base de datos.
+https://mongoosejs.com/
+Para instalarlo:
+>npm i mongoose
+
+
+# Para instalar bcrypt
+>npm i bcryptjs
+
+
+# Para utilizar JWT (Json Web Token)
+https://jwt.io/
+Para instalarlo:
+>npm i jsonwebtoken
+
+
+# Para utilizar CORS
+https://enable-cors.org/
+>npm i cors
+
+
+# Para instalar libreria para manejo de fechas (moment)
+npm i moment
 
 
 #################################################################################################################################################################
@@ -178,6 +255,19 @@ for (const file of files) {
 	fileUploadPromises.push(fileUpload(file)) // fileUpload internamente llama un API Rest.
 }
 const photosUrls = await Promise.all(fileUploadPromises); // Promise.all se cumple cuando todas las promesas del iterable dado se han cumplido, o es rechazada si alguna promesa no se cumple. 
+
+
+# Crear una promesa, Ejm:
+
+const myPromise = new Promise((resolve, reject) => {
+  setTimeout(() => {
+    resolve('foo');
+  }, 300);
+});
+
+await myPromise;
+
+- Las promesas deben ser esperadas con el await (no olvidar que esta palabra reservada se debe utilizar dentro de una funcion marcada con async)
 
 
 #################################################################################################################################################################
@@ -382,13 +472,6 @@ npm install file-saver --save
 npm install @types/file-saver --save
 
 
-#####Backend Node#####
-Para crear un servidor que sirva como backend para pruebas
-npm install -g json-server
-Para subir un API Rest que simule un backend:
-json-server --watch db.json (Ubicandose en la ruta donde este el archivo db.json)
-
-
 #####Instalacion de CryptoJS para encriptaciones#####
 npm install crypto-js --save
 npm install @types/crypto-js --save
@@ -579,10 +662,34 @@ https://es.reactjs.org/docs/events.html
 		}
 	
 
+### Creacion de Build ###
 
-# Creacion de Build:
 >npm run build
 - Se genera el directorio dist
+
+- Si se configuran build por ambiente en el package.json, se puede ejecutar en consola >npm run build:develop o >npm run build:prod
+etc, segun el ambiente que se quiera generar:
+- Ejm en el package.json:
+"scripts": {
+    "dev": "vite --base=/CalendarApp/", //Configuracion para desarrollo local ejecutando >npm run dev
+    "build:develop": "vite build --mode develop --base=/CalendarApp/",
+    "build:staging": "vite build --mode staging --base=/CalendarApp/",
+	"build:prod": "vite build --mode prod --base=/CalendarApp/",
+    "preview": "vite preview"
+},
+- En el BrowserRouter configurar el basename correspondiente:
+<BrowserRouter basename={import.meta.env.BASE_URL}>
+
+
+### Para vincular react en servidor Java ###
+
+- Compilar o generar build correspondiente del proyecto de react
+- Colocar al mismo nivel de los archivos de react generados tras el build, el directorio WEB-INF
+- Verificar el context root en el archivo weblogic.xml presente en el directorio WEB-INF
+- Para evitar problemas de direccionamiento (error 404) en el archivo web.xml presente en el directorio WEB-INF, colocar la pagina de bienvenida, como de error, apuntando al index.html
+- Ubicarse en el nivel del punto anterior y ejecutar el comando: jar cvf nombre_war-war.war .  
+- Desplegar el war generado en el servidor de aplicacion de java correspondiente
+- De ser necesario habilitar plugin en navegador para el manejo de CORS o configurar el CORS en el backend
 
 
 # Para probar se puede instalar un servidor http local
@@ -696,19 +803,35 @@ import { Addcategory, GifGrid } from './components';
 >npm install validator
 
 
-#Para instalar libreria para manejo de fechas (moment)
+# Para instalar libreria para manejo de fechas (moment)
 >npm install moment --save
-
+# Para instalar libreria para manejo de fechas (date-fns)
+>npm install date-fns --save
+# DatePicker
+>npm install react-datepicker --save
 
 # Para instalar libreria para manejo de mensajes (sweet alert)
 https://sweetalert2.github.io/
 >npm install sweetalert2
 
 
+# Para creacion de modales
+>npm install --save react-modal
+
+
 # Sitio para subir imagenes o videos
 https://cloudinary.com/
 https://api.cloudinary.com/v1_1/djpwklufs/upload
 
+
+# Variables de entoro
+- Se deben crear en la raiz del proyecto los archivos .env correspondientes segun los build a tener en cuenta:
+.env para desarrollo local
+.env.develop
+.env.staging
+.env.prod (en el .env de produccion colocar la propiedad NODE_ENV=production para generar un build apropiado para produccion y no se genere este mensaje de error:
+	(You are currently using minified code outside of NODE_ENV === 'production'. This means that you are running a slower development build of Redux)
+- Segun el build que se genere tomara automaticamente el archivo .env correspondiente.
 
 
 # Testing
@@ -994,9 +1117,9 @@ Grid Layout:
 - grid-area: cabecera;
 - grid-area: pie;
 
-#################################################################################################################################################################
-############################################################################### SASS ############################################################################
-#################################################################################################################################################################
+################################################################################################################################################################
+############################################################################### SASS ###########################################################################
+################################################################################################################################################################
 
 Es un pre-procesador CSS https://sass-lang.com/
 
@@ -1094,9 +1217,9 @@ $contador: 1;
 }
 
 
-#################################################################################################################################################################
-############################################################################### LESS ############################################################################
-#################################################################################################################################################################
+################################################################################################################################################################
+########################################################################### LESS ###############################################################################
+################################################################################################################################################################
 
 Es un pre-procesador CSS https://sass-lang.com/
 
@@ -1158,9 +1281,9 @@ h1 {
 }
 
 
-#################################################################################################################################################################
-########################################################################## BOOTSTRAP ############################################################################
-#################################################################################################################################################################
+################################################################################################################################################################
+########################################################################## BOOTSTRAP ###########################################################################
+################################################################################################################################################################
 
 #####Bootstrap#####
 De la pagina https://getbootstrap.com/ copia la ruta de css
@@ -1170,9 +1293,9 @@ Ejm: <!-- CSS only -->
 Y pegarla en el archivo index.html en la seccion correspondiente
 
 
-#################################################################################################################################################################
-############################################################################ MONGODB ############################################################################
-#################################################################################################################################################################
+################################################################################################################################################################
+############################################################################ MONGODB ###########################################################################
+################################################################################################################################################################
 
 # Download MongoDB Community Server https://www.mongodb.com/try/download/community
 - Ver la version de mongo instalada mongod --version
@@ -1195,6 +1318,31 @@ Y pegarla en el archivo index.html en la seccion correspondiente
 	sc.exe create MongoDB binPath= "\"C:\Program Files\MongoDB\Server\3.4\bin\mongod.exe\" --service --config=\"C:\data\mongod.cfg\"" DisplayName= "MongoDB" start= "auto"
 
 - Para subir mongodb si no esta levantado ejecutar por consola mongod.exe
+
+- Para crear un usuario administrador:
+use admin
+db.createUser(
+	{
+		user: "username",
+		pwd: "password",
+		roles: [ "root" ]
+	}
+)
+- Para crear un usuario de base de datos:
+use react-mern-calendar-app
+db.createUser(
+    {
+        user: "divier",
+        pwd: "12345678",
+        roles: [
+            { role: "readWrite", db: "react-mern-calendar-app" }
+        ]
+    }
+)
+
+- Para eliminar un usuario:
+db.dropUser("username")
+
 - Al crear una BD en mongo se debe crear si se desea el esquema o los esquemas que se vayan a trabajar, ejm:
 	db.createCollection("usuarios", {
 		validator: {
@@ -1257,16 +1405,16 @@ use database // Permite crear/seleccionar una BD (si se crea debe crearse una co
 
 
 
-#################################################################################################################################################################
-############################################################################# SPRING ############################################################################
-#################################################################################################################################################################
+################################################################################################################################################################
+############################################################################# SPRING ###########################################################################
+################################################################################################################################################################
 
 # Si no se trabaja con el IDE Spring Tool Suite se puede trabajar con IntelliJ, y luego se puede ingresar a la pagina: https://start.spring.io/ para generar una estructura de proyecto
 
 
-#################################################################################################################################################################
-########################################################################## JAKARTA EE9 ##########################################################################
-#################################################################################################################################################################
+################################################################################################################################################################
+########################################################################## JAKARTA EE9 #########################################################################
+################################################################################################################################################################
 
 
 # Servlet
