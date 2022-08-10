@@ -1,0 +1,109 @@
+################################################################################################################################################################
+############################################################################ MONGODB ###########################################################################
+################################################################################################################################################################
+
+# Download MongoDB Community Server https://www.mongodb.com/try/download/community
+- Ver la version de mongo instalada mongod --version
+- Si se instala mongodb desde un instalador binario:
+
+	(1) Install MongoDB
+	(2) Add bin to path
+	(3) Create c:\data\db
+	(4) Create c:\data\log
+	(5) Create c:\data\mongod.cfg with contents ..
+
+	systemLog:
+		destination: file
+		path: c:\data\log\mongod.log
+	storage:
+		dbPath: c:\data\db
+
+	(6) To create service that will auto start on reboot .. RUN AS ADMIN ..
+
+	sc.exe create MongoDB binPath= "\"C:\Program Files\MongoDB\Server\3.4\bin\mongod.exe\" --service --config=\"C:\data\mongod.cfg\"" DisplayName= "MongoDB" start= "auto"
+
+- Para subir mongodb si no esta levantado ejecutar por consola mongod.exe
+
+- Para crear un usuario administrador:
+use admin
+db.createUser(
+	{
+		user: "username",
+		pwd: "password",
+		roles: [ "root" ]
+	}
+)
+- Para crear un usuario de base de datos:
+use react-mern-calendar-app
+db.createUser(
+    {
+        user: "divier",
+        pwd: "12345678",
+        roles: [
+            { role: "readWrite", db: "react-mern-calendar-app" }
+        ]
+    }
+)
+
+- Para eliminar un usuario:
+db.dropUser("username")
+
+- Al crear una BD en mongo se debe crear si se desea el esquema o los esquemas que se vayan a trabajar, ejm:
+	db.createCollection("usuarios", {
+		validator: {
+			$jsonSchema: {
+				bsonType: "object",
+				required: [ "name", "email", "phone" ],
+				properties: {
+					name: {
+						bsonType: "string",
+						description: "must be a string and is required"
+					},
+					email: {
+						bsonType: "string",
+						description: "must be a string and is required"
+					},
+					phone: {
+						bsonType: "int" ,
+						description: "must be a number and is required"
+					},
+					status: {
+						bsonType: "bool" 
+					},
+					dateCreated:{
+						bsonType: "timestamp"
+					},
+					dateModified:{
+						bsonType: "timestamp"
+					}				
+				}
+			}
+		}
+	})
+
+	db.usuarios.createIndex( { "email":1 }, { unique: true } )
+
+	db.usuarios.insertOne({
+		name:"alicia",
+		email:"a@a.com",
+		phone:123,
+		status:true
+	})
+- En mongo se conoce como una coleccion al simil de (Una Tabla de una BD relacional)
+- Luego se deben crear los modelos asociados al esquema correspondiente
+
+# Comandos en mongosh
+use database // Permite crear/seleccionar una BD (si se crea debe crearse una coleccion para que aparezca la BD con el comando show dbs)
+
+# En mongo las funciones CRUD tienen la siguiente sintaxis: nombre_bd.nombre_colleccion.funcionCRUD
+- Lasfunciones CRUD pueden ser ejecutadas de forma unica o de forma masiva
+- insertMany: Inserta multiples documentos en una coleccion. nombre_bd.nombre_colleccion.insertMany([{...},{...},{...}])
+- find: Selecciona documentos en una coleccion y retorna un cursor db.collection.find(query, projection) el segundo argumento determina que campos son retornados en los documentos encontrados
+- findOne: Retorna un solo elemento, se puede retornar un campo con: db.collection.find(query).campo 
+- replaceOne: Reemplaza un unico documento en una coleccion basado en el filtro db.collection.replaceOne(filter, replacement, options)
+- update: Modifica un o varios documentos existentes en una colleccion, para varios tener en cuenta el parametro "multi" db.collection.update(query, update,
+ options)
+
+# Otros comandos
+- db.collection.drop() sirve para eliminar una coleccion
+- db.dropDatabase() sirve para eliminar una BD

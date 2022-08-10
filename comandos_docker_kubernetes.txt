@@ -1,0 +1,325 @@
+################################################################################################################################################################
+########################################################################## DOCKER ##############################################################################
+################################################################################################################################################################
+
+# Docker
+- Es una plataforma para crear y administrar contenedores
+- Un container es una caja aislada con una porcion de sistema operativo para ejecutar aplicaciones en nuestra maquina host
+- Instalacion en windows, en linux es nativo:
+https://www.docker.com/
+https://www.docker.com/get-started/ Docker Desktop
+https://docs.docker.com/desktop/install/windows-install/
+Hyper-V backend and Windows containers (Aplica para Windows Pro)
+Windows 11 64-bit: Pro version 21H2 or higher, or Enterprise or Education version 21H2 or higher.
+Windows 10 64-bit: Pro 21H1 (build 19043) or higher, or Enterprise or Education 20H2 (build 19042) or higher.
+
+
+# Requisitos:
+- For Windows 10 and Windows 11 Home, see the system requirements in the WSL 2 backend tab.
+
+- Hyper-V and Containers Windows features must be enabled.
+- En powershell ejecutar:
+>Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V -All
+>Enable-WindowsOptionalFeature -Online -FeatureName containers -All
+Reiniciar si lo solicita
+- Tener el soporte de virtualizacion habilitado desde la BIOS
+- Ejecutar el instalador
+
+
+# Imagenes
+https://hub.docker.com/ (Se pueden encontrar imagenes ya creadas por tecnologias)
+- Seleccionar por ejm Open JDK 18-jdk 
+- Es importante que el jdk instalado y el indicado en los pom correspondan al mismo.
+- Ubicarse en el IDE en el proyecto del microservicio correspondiente y dentro de la carpeta raiz del mismo crear el archivo:
+Dockerfile
+- (Opcional) se recomieda instalar en el IDE IntelliJ el plugin de docker
+- El archivo debe contener algo de este estilo:
+
+FROM openjdk:18-jdk
+
+WORKDIR /app     (Directorio o ruta en la imagen/contenedor)
+
+COPY ./target/ms-usuarios-0.0.1-SNAPSHOT.jar .  (Ruta en nuestra maquina local, el punto al final indica la ruta en la imagen/contenedor)
+COPY ./target/ms-usuarios-0.0.1-SNAPSHOT.jar /app    (Esta seria otra alternativa a la anterior)
+
+EXPOSE 8001
+
+ENTRYPOINT ["java", "-jar", "ms-usuarios-0.0.1-SNAPSHOT.jar"]
+
+- Ahora se debe construir la imagen, ubicarse en el directorio raiz del microservicio y tener en cuenta que docker este corriendo y ejecutar el comando:
+>docker build .  (el punto indica que el archivo Dockerfile se encuentra justo en el directorio raiz)
+>docker build -t nombreImagen .  (O, asignando un nombre a la imagen)
+
+- Tras ejecutarse el anterior comando se puede verificar la imagen creada:
+>docker images (Listar Imagenes)
+- Subir la imagen con:
+>docker run IMAGE ID   (reemplazar IMAGE ID por el valor que corresponda)
+- Tener en cuenta que el comando anterior puede fallar, ya que en el caso de spring se puede tener el microservicio trabajando con una Base de Datos en el 		equipo local, y como tal, ésta no estaria en el contenedor, por ende en el archivo application.properties de spring se debe modificar la url de conexion a la BD, la parte de localhost por un nombre de dominio especial el cual es host.docker.internal, quedando por ejm:
+	spring.datasource.url=jdbc:oracle:thin:@host.docker.internal:1521:orcl
+- Importante que al modificar lo comentado en el punto anterior, al generar nuevamente el jar con maven producto del cambio, no se tengan en cuenta los Test para que spring no saque error por cambiar el localhost por el host.docker.internal.
+>mvn clean package -DskipTests
+- Ejecutar nuevamente:
+>docker run IMAGE ID   (reemplazar IMAGE ID por el valor que corresponda)
+
+>docker ps  (Listar contendedores en ejecucion)
+>docker ps -a (Listar TODOS los contendedores)
+- Detener el contenedor con:
+>docker stop CONTAINER ID (reemplazar CONTAINER ID por el valor que corresponda)
+>docker run -p 8000:8001 724dcfccdcf7 (Permite levantar el contenerdor en el puerto 8000 (que es el puerto externo) (8001 es el puerto interno))
+>docker run -p 8000:8001 nombreImagen (Permite levantar tambien con el nombre de la imagen que se haya definido en el comando build)
+
+## Dockerfile:
+
+# Optimizacion del Dockerfile (Copiar el proyecto - generar jar - ejecutar)
+PROS: 
+- Las 3 tareas configuradas en un solo paso dentro del Dockerfile 
+CONTRA: 
+- Al realizar un cambio en el codigo del proyecto se demora siempre, ya que se descargan las dependencias y demas.
+
+FROM openjdk:18-jdk
+
+WORKDIR /app/ms-usuarios     
+
+COPY ./pom.xml /app  (Copia el pom del proyecto padre en la ruta /app del contenedor)
+COPY ./ms-usuarios .    (Copia el directorio del microservicio ms-usuarios en la ruta indicada en WORKDIR)
+
+RUN ./mvnw clean package -DskipTest   (Limpia y crea el jar del proyecto del miscroservicio en el contenedor)
+
+EXPOSE 8001
+
+ENTRYPOINT ["java", "-jar", "./target/ms-usuarios-0.0.1-SNAPSHOT.jar"]   (Toma el jar generado en el RUN)
+
+- Ahora se debe construir la imagen, ubicarse en el directorio padre y tener en cuenta que docker este corriendo y ejecutar el comando:
+docker build -t usuarios . -f ./ms-usuarios/Dockerfile
+
+
+# Optimizacion del Dockerfile (Solo tener en cuenta las modificaciones en el codigo fuente)
+PROS: 
+- Tareas configuradas en un solo paso dentro del Dockerfile
+- Solo se sube la carpeta src, escencial si solo cambiamos algo en el codigo del proyecto
+
+FROM openjdk:18-jdk
+
+WORKDIR /app/msvc-usuarios
+
+COPY ./pom.xml /app  (Copia ./pom.xml dentro de /app)
+COPY ./msvc-usuarios/.mvn ./.mvn    (Copia ./msvc-usuarios/.mvn dentro de WORKDIR/.mvn)
+COPY ./msvc-usuarios/mvnw .   (Copia ./msvc-usuarios/mvnw dentro de WORKDIR)
+COPY ./msvc-usuarios/pom.xml .   (Copia ./msvc-usuarios/pom.xml dentro de WORKDIR)
+
+RUN ./mvnw clean package -Dmaven.test.skip -Dmaven.main.skip -Dspring-boot.repackage.skip && rm -r ./target/  (-Dmaven.test.skip: se salta el test y la compilacion del test, -Dmaven.main.skip: se salta la compilacion de los fuentes dentro de main, -Dspring-boot.repackage.skip: empaqueta el proyecto sin los tes y sin el codigo fuente, rm -r ./target/: elimina la carpeta target)
+#RUN ./mvnw dependency:go-offline   ( Basicamente ambos comandos RUN hacen lo mismo, se debe usar uno u otro, y lo que hacen es escencialmente descargas las despendencias ) 
+
+COPY ./msvc-usuarios/src ./src  (Copia ./msvc-usuarios/src dentro de WORKDIR/src)
+
+RUN ./mvnw clean package -DskipTests
+
+EXPOSE 8001
+
+ENTRYPOINT ["java", "-jar", "./target/msvc-usuarios-0.0.1-SNAPSHOT.jar"]
+
+- Ahora se debe construir la imagen, ubicarse en el directorio padre y tener en cuenta que docker este corriendo y ejecutar el comando:
+docker build -t usuarios . -f ./ms-usuarios/Dockerfile
+
+
+## Mas Comandos Iniciar detener eliminar contenedores-imagenes
+>docker start CONTAINER ID / NAMES  (Levanta el contenedor, Este comando queda detached)
+>docker start -a CONTAINER ID / NAMES  (Levanta el contenedor, Este comando queda attached)
+
+>docker run -p 8000:8001 nombreImagen  (Levanta el contenedor, Este comando queda attached)
+>docker run -d -p 8000:8001 nombreImagen  (Levanta el contenedor, Este comando queda detached)
+
+>docker stop CONTAINER ID / NAMES  (Detiene el contenedor)
+
+>docker attach CONTAINER ID / NAMES  (Enlazar nuevamente a la consola, una ejecucion de un contenedor que se encuentra detached)
+
+>docker logs CONTAINER ID / NAMES  (Ver el log hasta el momento, Este comando queda detached)
+>docker logs -f CONTAINER ID / NAMES  (Ver el log hasta el momento, Este comando queda attached)
+
+>docker rm CONTAINER ID / NAMES  (Eliminar un contenedor, El contenedor a eliminar debe estar ya previamente detenido)
+>docker container prune (Elimina todos los contenedores que estan detenidos)
+
+>docker rmi REPOSITORY / IMAGE ID  (Eliminar una imagen, No se puede eliminar una imagen que este asociada a un contenedor)
+>docker image prune  (Eliminar todas las imagen que no estan asociadas un contenedor)
+
+>docker run -d -p 8000:8001 --rm nombreImagen  (Levanta el contenedor, Este comando queda detached, con --rm se elimina automaticamente el contenedor cuando se detenga)
+
+
+## Mas comandos - Interactuando con el contenedor
+>docker run -p 8000:8001 --rm -it nombreImagen /bin/sh (Levanta el contenedor, con --rm se elimina automaticamente el contenedor cuando se detenga, -it es para habilitar la interaccion con el contenedor)
+(NOTA: El ENTRYPOINT del Dockerfile es fijo no permite sobreescribir el comando de entrada, mientras CMD permite sobreescribir el comando de entrada)
+- Si el Dockefile tiene CMD... se puede ejecutar por ejm docker run -p 8000:8001 --rm -it nombreImagen /bin/sh  para ubicarse en ese directorio
+- Si el Dockefile tiene CMD... se puede ejecutar por ejm docker run -p 8000:8001 --rm -it nombreImagen  se ejecuta el comando definido en CMD
+
+
+## Mas comandos - Interactuando con el contenedor copiando archivos desde la maquina externa al contenedor
+>docker cp .\Login.java CONTAINER ID:/app/Login.java  (Copia el archivo Login.java del equipo local al contendor en la ruta indicada) 
+D:\Documents\ProyectosJava\Udemy-DockerKubernetesSpringBoot2022>docker cp .\Login.java CONTAINER ID:/app/Login.java  (Copia el archivo Login.java del equipo local al contendor en la ruta indicada) 
+
+D:\Documents\ProyectosJava\Udemy-DockerKubernetesSpringBoot2022>docker cp CONTAINER ID:/app/Login.java .\Login2.java (Copia el archivo Login.java del contendor al equipo local en la ruta indicada)
+
+
+## Mas comandos - Copiando los logs de spring del contenedor en el equipo local
+- En el archivo de configuracion de spring definir:
+logging.file.path=/app/logs
+- En el Dockerfile definir:
+...
+RUN mkdir ./logs
+...
+- Hacer el build
+>docker build -t usuarios . -f ./ms-usuarios/Dockerfile
+- Levantar el contenedor
+>docker run -p 8000:8001 --rm -d usuarios
+- Ahora se puede ejecutar
+D:\Documents\ProyectosJava\Udemy-DockerKubernetesSpringBoot2022\Seccion1234y5_Introduccion>docker cp b270151a4ea0:/app/logs .\logs   (b270151a4ea0 CONTAINER ID)
+- Y ahora se pueden ver los logs de spring del contenedor en el equipo local
+
+
+## Mas comandos - Inspeccionando una imagen
+>docker image inspect RESPOSITORY / IMAGE ID
+
+
+## Mas comandos - Inspeccionando un contenedor
+>docker container inspect CONTAINER ID / NAMES
+
+
+## Mas comandos - Colocando una etiqueta a la imagen y dando un nombre al contenedor
+>docker build -t usuarios:v2 . -f ./ms-usuarios/Dockerfile   (El v2 indica un nombre de etiqueta para la imagen TAG)
+>docker run -p 8000:8001 --rm -d --name nombre-contenedor usuarios:v2  (El --name indica un nombre de contenedor NAMES)
+
+
+## Comunicacion entre contenedores:
+- La comunicacion desde un contenedor hacia algun recurso del equipo local (BD, Otro Microservicio) debe hacerse con:
+host.docker.internal:puerto ....
+- La comunicacion entre contenedores debe hacerse con:
+nombre-contenedor:puerto ....
+- Por ejm, si se tienen 2 microservicios (2 proyectos aparte) y se desean dockerizar:
+	1. Crear el archivo Dockerfile para ambos proyectos
+	2. @FeignClient(name="ms-usuarios", url="nombre-contenedor-usuarios:8001") En el cliente del microservicio cursos para comunicarse con usuarios
+	3. @FeignClient(name="ms-cursos", url="nombre-contenedor-cursos:8001") En el cliente del microservicio usuarios para comunicarse con cursos
+	4. docker build -t cursos . -f ./ms-cursos/Dockerfile    Para construir la imagen de cursos
+	5. docker build -t usuarios . -f ./ms-usuarios/Dockerfile    Para construir la imagen de usuarios
+	6. docker network create spring    (Crea una red para asociar en ella los contenedores de ambos microservicios)
+	7. docker network ls  (Listar las redes)
+	8. docker run -p 8001:8001 -d --rm --name c-usuarios --network spring usuarios   (Crea el contenedor c-usuarios sobre la red spring con el --network)
+	9. docker run -p 8002:8002 -d --rm --name c-cursos --network spring cursos   (Crea el contenedor c-cursos sobre la red spring con el --network)
+
+
+## Dockerizar BD
+>docker pull gvenzl/oracle-xe:latest  (Para crear imagen de una BD Oracle version 21c Express Edition Release 21.0.0.0.0 - Production)
+>docker run -d -p 1522:1521 --name oracle -e ORACLE_PASSWORD=123456 --network spring gvenzl/oracle-xe
+(Para levantar contenedor de la imagen de Oracle sobre la red spring)
+
+Connect database with following setting:
+hostname: localhost
+port: 1522
+sid: xe
+username: system
+password: 123456
+
+
+## Volumenes
+
+>docker run -d -p 1522:1521 --name oracle -e ORACLE_PASSWORD=123456 --network spring -v oracle-volume:/opt/oracle/oradata --restart=always gvenzl/oracle-xe
+(-v oracle-volume:/opt/oracle/oradata  define el volumen con la ubicacion de la data en oracle,  --restart=always reinicia el contenedor de forma automatica)
+
+>docker volume ls  (Listar los volumenes)
+
+
+## Arguments - Environment
+- Docker soporta 2 tipos de variables que se pueden configurar:
+	1. Arguments en tiempo de construccion de la imagen ARG
+	2. Environment en tiempo de ejecucion ENV
+	
+- Ejm de configuracion:
+	1. En el archivo application.properties del microservicio colocar:
+	server.port=${PORT:8001}  (Si no se envia PORT se toma por defecto el valor 8001)
+	
+- Argumentos en el Dockerfile
+Se deben definir al principio del Dockerfile con:
+	ARG MS_NAME=ms-usuarios
+Y se utilizan con:
+	$MS_NAME
+Se deben declarar despues de cada FROM
+	ARG MS_NAME
+
+- Cuando se construye una imagen se pueden sobreescribir los ARG con --build-arg, Ejm:
+> docker build --build-arg MS_NAME=un_valor
+
+- Resumiendo:
+ARG required_var   //Se espera un valor
+ARG var_name=def_value  //Se establece valor por defecto
+ENV foo=other_value  //Se establece valor por defecto
+ENV bar=${var_name}   //Se establece valor por defecto desde el ARG var_name
+
+>docker build --build-arg var_name=value  //Se sobreescribe el valor del ARG var_name
+
+>docker run -e "foo=other_value" ...
+>docker run --env-file env_file_name   (.env)
+
+>docker run -p 8001:8001 --env-file ./ms-usuarios/.env -d --rm --name c-usuarios --network spring usuarios
+>docker run -p 8002:8002 --env-file ./ms-cursos/.env -d --rm --name c-cursos --network spring cursos
+
+
+## Docker Compose
+
+- Orquestador de contenedores en un solo archivo de configuracion
+- Ver archivo docker-compose del proyecto curso-spring-kubernetes
+- Se debe crear en la raiz del proyecto el archivo:
+docker-compose.yaml
+- Se debe adicionar en el archivo anterior, la version de caracteristicas de docker compose
+>docker-compose up -d  //Levanta los contenedores en modo detached
+>docker-compose down   //Detiene y elimina los contenedores
+>docker-compose stop   //Detiene los contenedores
+>docker-compose start  //Levanta los contenedores que estan detenidos
+
+>docker network ls
+>docker service create --network spring
+
+- Para la parte de creacion de imagenes automaticas en el docker-compose:
+#image: usuarios
+build:
+	context: ./
+	dockerfile: ./ms-usuarios/Dockerfile
+>docker compose up --build -d  //Forza la creacion de las imagenes si ya existen, antes de levantar los contenedores, uil al realizar algun cambio en codigo
+>docker compose build   //Crea las imagenes sin levantar los contenedores
+
+
+################################################################################################################################################################
+########################################################################## KUBERNETES ##########################################################################
+################################################################################################################################################################
+
+# Kubernetes
+- Es una plataforma de codigo abierto para automatizar la implementacion, el escalado y la adminsitracion de aplicaciones en contenedores
+- Un contenedor reside dentro de un Pod, puede haber mas de un contenedor dentro de un Pod, el Pod los administra.
+- Un Pod es manejado por un Worker Node, el Worker Node es una maquina y puede alojar mas de un Pod
+- Un Master Node se encarga de manjear los Worker Node
+- Un cluster agrupa los componentes anteriores y dicho cluster esta sobre algun Cloud Provider API
+- Toda la configuracion de kubernetes queda dentro de una BD que se llama Etcd de pares y valores
+
+
+# Herramientas necesarias
+https://kubernetes.io/es/docs/tasks/tools/
+- kubectl
+	Usa la herramienta de línea de comandos de Kubernetes
+	Abrir Power Shell
+	https://chocolatey.org/install#individual    //Instalar chocolately eejcutar el comando que alli se encuentra
+	https://kubernetes.io/docs/tasks/tools/install-kubectl-windows/#install-on-windows-using-chocolatey-or-scoop
+	1. >choco install kubernetes-cli
+	2. >kubectl version --client   //Para validar la instalacion
+	3. Crear el directorio .kube en: C:\Users\hsrx4\
+	4. En la anterior ubicacion en el mismo powershell ejecutar >New-Item config -type file 
+- minikube
+	https://minikube.sigs.k8s.io/docs/start/
+	1. Descargar e instalar el .exe
+	2. Descargar e instalar Hiper-v  //Al instalar Docker en un winows pro ya deb existir Hiper-v
+	3. Ejecutar:
+	>minikube start --driver=hyperv
+
+
+# Pod
+- El objeto Pod es la unidad mas pequeña que tenemos en Kubernetes
+
+
+# Deployment
+- El objeto Deployment controla a los pod

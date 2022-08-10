@@ -1,0 +1,170 @@
+################################################################################################################################################################
+############################################################################# SPRING ###########################################################################
+################################################################################################################################################################
+
+# Si no se trabaja con el IDE Spring Tool Suite se puede trabajar con IntelliJ, y luego se puede ingresar a la pagina: https://start.spring.io/ para generar una estructura de proyecto
+
+
+# Spring Data
+- Dependencia:
+<dependency>
+	<groupId>org.springframework.data</groupId>
+	<artifactId>spring-data-jpa</artifactId>
+</dependency>
+- Api:
+public interface CrudRepository<T, ID> extends Repository<T, ID>
+CrudRepository contiene los metodos(save, findById, findAll, count, delete, existsById, etc...)
+- Una interface propia que extienda por ejm de CrudRepository queda automaticamente registrada en el contexto de spring, no hay necesidad de anotarla con nada, con lo cual despues esta se puede injectar con el correspondiente @Autowired
+- Posibles formas de generar querys: 
+	Optional<Usuario> findByEmail(String email);//La clave está en el nombre del metodo con findBy + atributo (en la documentacion se pueden ver los diferentes tipos)
+- Otra posible forma de consultar usando la anotacion @Query
+	@Query("select u from Usuario u where u.email=?1")
+	Optional<Usuario> consultarPorEmail(String email);
+- @Modifying // Esta anotacion se usa acompañada de @Query para sentencias INSERT, UPDATE, DELETE
+- @Query("delete from CursoUsuario cu where cu.usuarioId=?1")
+
+
+# Rest
+- 	@DeleteMapping("/{id}") //Cuando en el path venga algo de este tipo {id} el metodo debe recibir dicho valor como un @PathVariable
+	public ResponseEntity<?> eliminar(@PathVariable Long id) { //ResponseEntity<?> con generico para representar un tipo de salida o respuesta diferente
+
+- 	@PutMapping("/{id}")
+	public ResponseEntity<?> editar(@RequestBody Usuario usuario, @PathVariable Long id) { //Cuando se registra o actualiza deberia venir el @RequestBody como argumento en el metodo, el cual representa el objeto a crear o actualizar.
+
+-	@GetMapping("/usuarios-por-curso")//La anotacion @RequestParam indica que viene un path con argumentos del tipo ?, ejm:http://localhost:8001/usuarios-por-curso?ids=1,2,6
+	public ResponseEntity<?> obtenerAlumnosPorCurso(@RequestParam List<Long> ids){
+
+
+# Validation
+- Dependencia:
+<dependency>
+	<groupId>org.springframework.boot</groupId>
+	<artifactId>spring-boot-starter-validation</artifactId>
+</dependency>
+
+- En una clase pojo o entity se pueden anotar sus propiedades con las anotaciones de este paquete import javax.validation.constraints.*
+- En un servicio rest los metodos de cada operacion pueden recibir la anotacon @valid acompañana de BindingResult result:
+@PostMapping
+public ResponseEntity<?> crear(@Valid @RequestBody Usuario usuario, BindingResult result)//BindingResult debe ir en seguida del objeto a validar
+@PutMapping("/{id}")
+public ResponseEntity<?> editar(@Valid @RequestBody Usuario usuario, BindingResult result, @PathVariable Long id)//BindingResult debe ir en seguida del objeto a validar
+
+
+# Open Feign
+Se debe utilizar asi:
+- Se debe colocar esta anotacion (@EnableFeignClients) en la clase principal de spring que esta marcada con @SpringBootApplication
+- Se debe crear una interface anotada con @FeignClient con el nombre del microservicio a consumir y la ruta url base del microservicio a consumir
+@FeignClient(name="ms-usuarios", url="localhost:8001")
+- Se puede acceder alguna propiedad del archivo application.properties asi ${...}:
+@FeignClient(name = "ms-cursos", url = "${ms.cursos.url}")   ms.cursos.url es igual a una propiedad existente en el application.properties
+
+
+
+################################################################################################################################################################
+########################################################################## JAKARTA EE9 #########################################################################
+################################################################################################################################################################
+
+
+# Servlet
+- El uso de HttpSession permite guardar hasta objetos en sesion del lado del servidor
+- Al realizarse un request al servidor automaticamente se genera la cookie JSESSIONID
+- Se puede redireccionar a otro recurso con: un redirect, o un dispacher dependiendo del escenario.
+- Basicamente el Redirect, Se refiere a que la solicitud se redirige a un recurso diferente, se crea una nueva solicitud.
+- Basicamente el Forward, Los objetos de solicitud y respuesta seguirán siendo el mismo objeto después del reenvío. Si se requiere el ámbito anterior, o no es necesario informar al usuario, pero la aplicación también desea realizar una acción interna.
+- Al crearse un Listener se debe marcar con la anotacion @WebListener e implementar las interfaces ServletContextListener, ServletRequestListener, HttpSessionListener
+- Los listener estan orientados a cualquier request y cualquier servlet
+- Al crearse un filtro se debe marcar con @WebFilter e implementar la interface Filter (Metodo doFilter - Tareas a realizar antes y/o despues de la ejecucion del servlet).
+- En @WebFilter se deben definir las rutas de los servlet que pasaran por el filtro.
+- Los filtros estan orientados exclusivamente a los request. Y se puede mapear en ellos, en que servlet se van a ejecutar.
+
+
+# JSP
+- JSTL, para su utilizacion se debe configurar la respectiva dependencia en el pom.xml y en el archivo .jsp colocar:
+<%@ taglib uri="http://java.sun.com/jstl/core" prefix="c" %>
+- <jsp:include page="layout/header.jsp" /> Permite colocar contenido de un jsp en otro jsp.
+
+
+# CDI
+- De debe crear el archivo beans.xml dentro del directorio /src/main/webapp/WEB-INF del proyecto web (war) y agregar la dependencia correspondiente para utilizar CDI
+- En el archivo beans.xml se puede configurar como se desea hacer el descubrimiento de los beans.
+- El registro de un bean se hace automaticamente en el contexto CDI
+- Tambien se puede registrar un bean mediante metodo con @Produces (Utilizado para inyectar un objeto propio de java o de un tercero, Ejm Connection, Logger)
+- Inyectar un bean dentro de otro con @Inject
+- Manejo de contextos @Depend es por defecto, tambien estan @RequestScoped, @SessionScoped (Debe implementarse la interface serializable), @ConversationScoped (Debe implementarse la interface serializable), @ApplicationScoped
+- Si se inyecta un bean que no es serializable en un contexto serializable se debe colocar como transient.
+- Si no se define el contexto de un bean, como el default es @Depend, el contexto que se toma es el del bean donde se esta haciendo la inyeccion.
+- @Named permite dar un nombre al bean
+- Si existe mas de una implementacion de una interface, las implementaciones que no se vayan a usar se pueden anotar con @Alternative excepto la que se vaya a autilizar (Inyectar)
+- Si existe mas de una implementacion de una interface, se puede considerar el uso de @Named para identificar que implementacion se va a utilizar (Inyectar)
+- Si existe mas de una implementacion de una interface, se puede crear una anotacion personalizada y anotarla con @Qualifier, y esta colocarla en la implementacion que se va a utilizar (inyectar)
+- Para inyectar recursos del servidor como por ejm un datasource se anota el atributo con @Resource
+- Se puede crear una anotacion personalizada y anotarla con @Stereotype para agrupar un conjunto de anotaciones
+- Se puede utilizar la anotacion @Disposes para cerrar recursos
+- El bean tiene en su ciclo de vida @PostConstruct que se ejecuta despues del constructor y @PreDestroy que se ejecuta cuando se destruye o finaliza el contexto del bean.
+- Se pueden utilizar interceptores para ejecutar tareas antes y despues de la ejecucion de un metodo, para ello se deb:
+	1. Crear anotacion personalizada con @InterceptorBinding
+	2. Crear clase interceptora enlazandola (anotandola) con la anotacion personalizada creada en el punto 1
+	3. Dentro de la clase del punto 2 crear un metodo anotado con @AroundInvoke que debe devolver un Object
+	4. En el metodo creado en el punto 3, llamar a InvocationContext.proceed(), que se encarga de ejecutar el o los metodos interceptados.
+	5. Anotar la clase o los metodos en especifico que vayan a ser interceptados con la anotacion creada en el punto 1.
+	6. Registrar en el archivo beans.xml el o los interceptores creados.
+
+
+#JPA
+- Tras consultar con el metodo find(), este deja en cache el objeto consultado por lo que no genera una nueva consulta sobre la BD.
+- En una consulta se puede utilizar un dto para asignar los valores de la entidad, Ejm em.createQuery("select new org.mipaquete.ClienteDto(c.nombre, c.apellido) from Cliente c", ClienteDto.class); Se debe colocar el package completo del Dto, sino genera un error.
+- Para desarrollo se puede utilizar la propiedad drop-and-create en el archivo persistence.xml para que se eliminen las tablas y se vuelvan a crear
+- Se puede utilizar un archivo que debe llamarse import.sql dentro de /src/main/resources para cargar data automaticamente
+- Con @PrePersist y @PreUpdate se puede generar informacion de campos como por ejm un auditoria de fechas de creacion y de modificacion.
+- @Embedable y @Embeded son para adicionar atributos a una entidad.
+
+# Relaciones Jpa
+- Los atributos de tipo list deben ser inicializados, no deben ser null
+- @JoinColumn permite definir un nombre de FK personalizado
+- En una relacion unidireccional de tipo @OneToMany sin el @JoinColumn se crea una tabla intermedia
+- @JoinColumn y mappedBy nunca deben ir sobre un mismo atributo
+- Una relacion bi-direccional es cuando una entidad tiene un atributo de la otra con la que esta relacionada, y viceversa. Y ambas tienen en dicho atributo el @OneToOne @OneToMany @ManyToOne @ManyToMany segun corresponda.
+- Es importante que al momento de hacer una actualizacion o eliminacion el objeto en cuestion se encuentre en el contexto de jpa.
+- @OneToMany @ManyToMany por defecto son FetchType.LAZY
+- @ManyToOne @OneToOne por defecto son FetchType.EAGER
+- Para optimizar consultas y no generar consultas separadas, se debe utilizar en un createQuery un "join fetch"
+- En una consulta, para el caso de una entidad que este relacionada con 2 listas de entidades o mas, se lanza un error de multiples bags, esto sucede si dichas listas son traidas de tipo EAGER, o aun, si en el query se utiliza el JOIN FETCH. La forma de solventar este error, es cambiando las listas en cuestion por el tipo Set (List -> Set), lo cual no es recomendable, la forma recomendable seria hacer consultas aparte para un escenario de este tipo.
+
+
+#EJB
+- Un EJB Stateless comparte la misma instancia para todos los clientes, no tiene contexto (no aplica ningun contexto CDI), no mantiene un estado
+	Por ejemplo, Si se colocan 2 instancias de un EJB Stateless en un mismo cliente (ejm un servlet), estas son iguales, es decir hay una unica instancia.
+	Antes varias peticiones a un servlet por ejm, la unica instancia que existe se mantiene.
+- Un EJB Stateful puede mantener una conversacion con el contexto
+	Por ejemplo, Si se colocan 2 instancias de un EJB Stateful en un mismo cliente (ejm un servlet), estas son diferentes.
+	Ante varias peticiones a un servlet por ejm, cada instancia se mantiene (quedan estaticas)
+- Un EJB Stateful o Stateless se debe inyectar con @Inject y no con @EJB, si para el ejb se maneja algun contexto CDI, es decir, si el EJB inyecta algun componente CDI.
+
+- Si no se utiliza la anotacion @EJB o un @Inject para inyectar un ejb, se puede llamar el ejb mediante el InitialContext por el JNDI
+	Para interface local el JNDI empieza por java:global/....
+	Para interface remota el JNDI empieza por ejb:/....
+	La interface local definida con @Local es para cuando los ejb son accedidos desde el mismo servidor de aplicaciones
+	La interface remota definida con @Remote es para cuando los ejb son accedidos desde un cliente fuera del servidor de aplicaciones donde estan contenidos los ejb. El cliente debe tener como dependencia el .jar donde esta el proyecto ejb remoto y la dependencia para comunicacion con ejb para el servidor de aplicaciones segun corresponda
+	Para el uso de la interface remota no olvidar serializar los objetos
+	Se puede utilizar un archivo jndi.properties (debe llamarse asi y estar dentro de la carpeta /src/main/resources del proyecto ejb) para establecer los valores del InitialContext
+	
+	
+#JSF3
+- En Jakarta EE 9 la anotacion @ManagedBean ha quedado deprecated, debe utilizar una anotacion del contexto CDI
+- El controlador de una pagina jsf se puede anotar con @Model que tiene inmersas las anotaciones @RequestScope y @Named
+- Las peticiones en Jakarta server faces pasan por el servlet FacesServlet
+- Un h:commandButton o un h:commandLink debe estar dentro de un h:form y en el action pueden llamar a una vista .xhtml o un metodo del controlador
+- Para pasar un parametro por get se puede usar h:link para enviar a una vista con el outcome
+	Ejm: en un index.xhtml se tiene ...
+	<h:link value="xx" outcome="form">
+		<f:param name="id" value="obj.id" />
+	</h:link>
+	en un form.xhtml se recibe con ...
+	<f:metadata>
+		<f:viewparam name="id" value="#{controller.id}" />
+	</f:metadata>
+- Para listas por lo general se debe usar un converter, es decir, una clase propia que implemente la interface Converter y utilizarlo dentro del campo h:selectOneMenu correspondiente con <f:converter binding="converter"
+- La clase converter creada tambien se debe anotar con una anotacion del contexto CDI
+- Se puede utilizar un archivo de idiomas messages.properties (debe llamarse asi y estar dentro de la carpeta /src/main/resources del proyecto web)
+	Por ejm se pueden tener messages.properties, messages_es.properties messages_en.properties para idiomas español e ingles
+	

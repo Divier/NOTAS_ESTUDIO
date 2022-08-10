@@ -9,6 +9,9 @@ git init //Inicializar nuestro repositorio
 git add . //Prepara todos los archivos modificados
 git commit -m "primer commit" //Toma la "fotografia" de los archivos modificados
 git checkout -- . //Reconstruye los fuentes al ultimo commit
+git checkout -b nombre_rama //Crea una rama con el nombre indicado y se para en ella
+git checkout nombre_rama // Selecciona la rama indicada y se para en ella
+git branch // Para ver las ramas
 git branch -M main //Renombra la rama donde nos encontramos y le cambia el nombre a main
 git remote add origin https://github.com/Divier/seccion_7_curso_angular_gifs.git (Este ya debe existir, crear previamente en github.com)
 git push -u origin main
@@ -124,6 +127,21 @@ https://enable-cors.org/
 npm i moment
 
 
+# Para probar una aplicacion Angular o React se puede instalar un servidor http local (http-server)
+>npm install -g http-server
+- Ubicandose en el directorio dist, se puede ejecutar lo siguiente para subir la aplicacion
+>http-server -o
+- Importante decir que en react el modo stricto no esta habilitado en produccion, en desarrollo si.
+- Importante decir que en react el modo stricto al estar habilitado en desarrollo puede generar mas de una ejecucion al utilizar el hook useEffect, o el useLayoutEffect.
+
+
+# Para probar una aplicacion Angular o React se puede instalar un servidor http local (serve)
+Serve lo ayuda a servir un sitio estático, una aplicación de una sola página o simplemente un archivo estático (no importa si está en su dispositivo o en la red local).
+>npm install --global serve
+- Ubicandose en el directorio raiz del proyecto, se puede ejecutar lo siguiente para subir la aplicacion
+>serve -s dist
+
+
 #################################################################################################################################################################
 ######################################################################## TypeScript #############################################################################
 #################################################################################################################################################################
@@ -141,6 +159,8 @@ Para utilizar librerias de terceros se deben tener en cuenta los archivos de def
 Ejm: 
 @types/express (Usar express)
 @types/jquery (Usar JQuery)
+
+- Un type y una interface son simliares, la diferencia es que un type no se puede extender.
 
 #################################################################################################################################################################
 ########################################################################### RxJS ################################################################################
@@ -167,7 +187,7 @@ Aparte, hay otra característica de los Subjects que les da una gran versatilida
 
 
 #################################################################################################################################################################
-######################################################################## JavaSCript #############################################################################
+######################################################################## JavaScript #############################################################################
 #################################################################################################################################################################
 
 -Todos los primitivos se pasan por valor, mientras que los objetos y los arreglos se pasan por referencia.
@@ -269,6 +289,41 @@ await myPromise;
 
 - Las promesas deben ser esperadas con el await (no olvidar que esta palabra reservada se debe utilizar dentro de una funcion marcada con async)
 
+
+# Delete
+- El operador delete de JavaScript remueve una propiedad de un objeto; si no se mantienen más referencias a la misma propiedad, eventualmente se libera automáticamente. Ejm:
+const newData = {...actShoppingCart};
+delete newData[product.id]; //product.id es una propiedad computada del objeto 
+return newData;
+
+
+# Clonar objetos
+let objClone = { ...obj }; // Operador spread (...)
+
+
+# Copiar arreglos
+let arr2 = [...arr];
+
+
+# return
+- Nunca devuelva algo en una nueva línea sin usar paréntesis. Esta es una peculiaridad de JavaScript y el resultado será indefinido. Trate de usar siempre paréntesis cuando devuelva algo en varias líneas.
+function foo() {
+    return 
+      1;
+}
+function boo() {
+    return (
+      1
+    );
+}
+foo(); --> undefined
+boo(); --> 1
+
+
+# Negaciones
+!null = true
+!undefine = true
+!''= true
 
 #################################################################################################################################################################
 ########################################################################## Angular ##############################################################################
@@ -515,17 +570,20 @@ npm install @types/crypto-js --save
 
 # Creacion de proyecto React con Create (CRA WebPack):
 
-- Comando para crear una app React: npx create-react-app nombre_proyecto
-- npm start para subir la aplicacion
+- Comando para crear una app React: 
+>npx create-react-app nombre_proyecto (Para crearlo con javascript)
+>npx create-react-app nombre_proyecto --template typescript (Para crearlo con typescript)
+>npm start (Para subir la aplicacion)
 - Con este esquema de creacion no ejecutar el comando eject
 - En el index.html en el id="root" es donde queda incrustada toda la aplicacion
 
 
 # Creacion de proyecto React con Vite:
 
-- Comando para crear una app React: npm create vite
-npm install Para instalar los paquetes ya que Vite no lo hace automaticamente
-npm run dev para subir la aplicacion
+- Comando para crear una app React: 
+>npm create vite
+>npm install Para instalar los paquetes ya que Vite no lo hace automaticamente
+>npm run dev para subir la aplicacion
 
 
 -Cuando se requiera devolver un conjunto de elementos que estan en el mismo nivel jerarquico en un functional component, se pueden envolver con un Fragment, ya que siempre se debe devolver un nodo padre, o encerrados con <> ... </>
@@ -562,20 +620,30 @@ https://es.reactjs.org/docs/events.html
 - useState
 	El único argumento para el Hook useState() es el estado inicial, puede ser un primitivo, un array un objeto
 	Devuelve una pareja de valores: el estado actual y una función que lo actualiza
+	useState si hace un re-renderizado del componente.
 	
 - useEffect
 	Recibe 2 argumentos, 1 una funcion callback de lo de se desea ejecutar, y 2 una lista de dependencias (opcional) que son las condicione spara volver a ejecutar el callback, si el 2 argumento se deja vacio el hook se dispara solo la primera vez q se crea el componente.
 	Al usar este Hook, le estamos indicando a React que el componente tiene que hacer algo después de renderizarse. React recordará la función que le hemos pasado (nos referiremos a ella como nuestro “efecto”), y la llamará más tarde después de actualizar el DOM. En este efecto, actualizamos el título del documento, pero también podríamos hacer peticiones de datos o invocar alguna API imperativa.
+	
+- useLayoutEffect
+	Es idéntico a useEffect, pero su principal diferencia clave es que se activa sincrónicamente después de todas las mutaciones del DOM
 
 - useRef
 	Devuelve un objeto ref mutable cuya propiedad .current se inicializa con el argumento pasado (initialValue). El objeto devuelto se mantendrá persistente durante la vida completa del componente.
 	Puede que estes familiarizado con las referencias principalmente como un medio para acceder al DOM. Si pasas un objeto de referencia a React con <div ref={myRef} />, React configurará su propiedad .current al nodo del DOM correspondiente cuando sea que el nodo cambie.
 	Sin embargo, useRef() es útil para más que el atributo ref. Es conveniente para mantener cualquier valor mutable que es similiar a como usarías campos de instancia en las clases.
+	useRef no hace un re-renderizado del componente.
 
 - useMemo
 	Devuelve un valor memorizado.
 	Pasa una función de “crear” y un arreglo de dependencias. useMemo solo volverá a calcular el valor memorizado cuando una de las dependencias haya cambiado.
 	const hero = useMemo(() => getHeroById(id), [id]);
+	
+	const parsedDeadline = useMemo(() => {
+        console.log('memo');
+        return Date.parse(deadline);
+    }, [deadline]);
 
 - useCallback
 	Devuelve un callback memorizado.
@@ -601,6 +669,101 @@ https://es.reactjs.org/docs/events.html
 - Cada vez que react detecta un cambio en el componente lo vuelve a ejecutar para redibujarlo
 - En una etiqueta no se pueden aplicar clases con el atributo class, debe usarse className.
 - En VSC se puede crear rapidamente el snipet con: escribiendo rafc + tab
+- En un elemento personalizado, el nombre del mismo no debe empezar por lowercase
+
+
+# Compound Component Pattern
+- Segmentar un componente en varios componentes mas pequeños
+- El componente padre o principal convertirlo en un Higher Component cuyos hijos son los sub-compoenentes creados en el punto anterior
+- Revisar seccion 5 del curso de react pro:
+<ProductCard product={product}> ----> Componente Padre
+  <ProductCard.Image /> ----> Sub-Componentes Hijos
+  <ProductCard.Title title={ product.title } />
+  <ProductCard.Buttons counter={0} increaseBy={function (value: number): void {
+	throw new Error('Function not implemented.');
+  } } />
+</ProductCard>
+
+
+# Router (Este es un componente de nivel superior - Higher Component)
+# Instalacion de React Router
+>npm install react-router-dom@6
+- Se debe importar: import { BrowserRouter } from "react-router-dom";
+- Utilizar este higher component en el elemento mas arriba que consideremos de nuestra aplicacion.
+	en el main.jsx
+	ReactDOM.createRoot(document.getElementById('root')).render(
+	  <BrowserRouter>
+		<React.StrictMode>
+		  <MainApp />
+		</React.StrictMode>
+	  </BrowserRouter>
+	)
+- Definir en un archivo functional component las rutas principales de la Aplicacion ejm en un archivo AppRouter.jsx
+	<Routes>
+        <Route path="login" element={ <LoginPage /> } />
+        <Route path="/*" element={ <HeroesRoutes /> } />
+	</Routes>
+- Utilizar el functional component creado ejm:
+	<AppRouter />
+- Para navegacion por ejm desde un boton utilizar el hook useNavigate
+	const navigate = useNavigate();
+	navigate(-1); //-1 Para regresar
+- Para navegacion por ejm desde un enlace utilizar <Link>
+	<Link to={`/hero/${id}`}>
+		Mas...
+	</Link>
+	
+	<NavLink> // Permite determinar si se esta en la ruta dependiendo del path y asi colocar una clase de activo o no
+- Para navegacion por ejm desde un redireccionamiento que se desee hacer utilizar <Navigate>
+	return <Navigate to={'/marvel'} />
+- El hook useParams() permite recibir parametros que vienen en el url, se utiliza al pasar parametros del tipo (/hero/${id}) cuya url se mapea con (/hero/:id)
+- El hook useLocation() es como un estado que siempre devuelve su URL actual. Si se cambia la URL, useLocation también se actualizará, se utiliza al pasar parametros de consulta del tipo (?some=search-string)
+
+
+# Rutas Privadas y Publicas (Este tambien es un componente de nivel superior)
+- Crear el higher component o componente de nivel superior (Basicamente un functional component) ejm "PrivateRoute.jsx", pasandole como argumento un children que reseprentaria los hijos que este componente tendria (es decir las rutas privadas que este contendria)
+- En este componente se puede validar por ejm si el usuario esta logueado para acceder a las rutas privadas.
+- Utilizar este componente, colocarlo envolviendo las rutas que se vayan a dejar privadas o publicas
+<Route path="/*" element={
+  <PrivateRoute>
+	<HeroesRoutes />
+  </PrivateRoute>
+}/>
+
+
+# Lazy Load
+- Utilizar el metodo lazy de:
+import { lazy } from 'react';
+- Para trabajar con componentes Lazy, estos deben ser exportados con un export default.
+const Lazy1 = lazy( () => import(/* webpackChunkName: "Lazy1" */  '../01-lazy-load/pages/LazyPage1') ); // dejar el comentario para renombrar el chunk
+- Se debe envolver el elemento <BrowserRouter> con <Suspense fallback={ <span>Loading...</span> } > //El fallback pueder ser null tambien
+- Al trabajar de forma modularizada, los estilos css dentro de un modulo, react les asigna un hash de forma unica.
+
+
+### Context (Este es un componente de nivel superior - Higher Component)
+# Opcion 1 Para Manejo de Contextos:
+
+- Se debe crear en un archivo por ejm "AuthContext.jsx", puede ser dentro de un directorio llamado por ejm "context"
+	Con lo siguiente: export const AuthContext = createContext(); // import { createContext } from "react";
+- Crear el higher component o componente de nivel superior (Provider) ejm "AuthProvider.jsx", pasandole como argumento un children que reseprentaria los hijos que este componente tendria.
+	Con lo siguiente: importar el elemento context creado en el punto anterior
+	return (
+		<AuthContext.Provider value={{...authState, login, logout }}>
+			{ children }
+		</AuthContext.Provider>
+	);
+- Colocar el higher component creado en el elemento mas arriba que consideremos de nuestra aplicacion
+	Con lo siguiente: Se toma el componente raiz, ejm MainApp y se reemplaza el fragment por el <AuthProvider> creado en el punto anterior
+- Utilizar donde se requiera el useContext... const context = useContext(AuthContext); //Se puede tambien desestructurar
+# Opcion 2 Para Manejo de Contextos:
+const ProductContext = createContext({});
+const { Provider } = ProductContext;
+<Provider value={{ ...authState, login, logout }}>
+	...
+	{ children }
+	...
+</Provider>
+- Utilizar donde se requiera el useContext... const context = useContext( ProductContext ); //Se puede tambien desestructurar
 
 
 # Reducer
@@ -692,12 +855,14 @@ etc, segun el ambiente que se quiera generar:
 - De ser necesario habilitar plugin en navegador para el manejo de CORS o configurar el CORS en el backend
 
 
-# Para probar se puede instalar un servidor http local
-npm install -g http-server
-- Ubicandose en el directorio dist, se puede ejecutar lo siguiente para subir la aplicacion
->http-server -o
-- Importante decir que en react el modo stricto no esta habilitado en produccion, en desarrollo si.
-- Importante decir que en react el modo stricto al estar habilitado en desarrollo puede generar mas de una ejecucion al utilizar el hook useEffect, o el useLayoutEffect.
+# Variables de entoro
+- Se deben crear en la raiz del proyecto los archivos .env correspondientes segun los build a tener en cuenta:
+.env para desarrollo local
+.env.develop
+.env.staging
+.env.prod (en el .env de produccion colocar la propiedad NODE_ENV=production para generar un build apropiado para produccion y no se genere este mensaje de error:
+	(You are currently using minified code outside of NODE_ENV === 'production'. This means that you are running a slower development build of Redux)
+- Segun el build que se genere tomara automaticamente el archivo .env correspondiente.
 
 
 # Archivo de Barril
@@ -710,63 +875,9 @@ Y al hacer la importacion del index.js se hace asi, Ejm: (No hay necesidad de co
 import { Addcategory, GifGrid } from './components';
 
 
-# Router (Este es un componente de nivel superior)
-# Instalacion de React Router
->npm install react-router-dom@6
-- Se debe importar: import { BrowserRouter } from "react-router-dom";
-- Utilizar este higher component en el elemento mas arriba que consideremos de nuestra aplicacion.
-	en el main.jsx
-	ReactDOM.createRoot(document.getElementById('root')).render(
-	  <BrowserRouter>
-		<React.StrictMode>
-		  <MainApp />
-		</React.StrictMode>
-	  </BrowserRouter>
-	)
-- Definir en un archivo functional component las rutas principales de la Aplicacion ejm en un archivo AppRouter.jsx
-	<Routes>
-        <Route path="login" element={ <LoginPage /> } />
-        <Route path="/*" element={ <HeroesRoutes /> } />
-	</Routes>
-- Utilizar el functional component creado ejm:
-	<AppRouter />
-- Para navegacion por ejm desde un boton utilizar el hook useNavigate
-	const navigate = useNavigate();
-	navigate(-1); //-1 Para regresar
-- Para navegacion por ejm desde un enlace utilizar <Link>
-	<Link to={`/hero/${id}`}>
-		Mas...
-	</Link>
-- Para navegacion por ejm desde un redireccionamiento que se desee hacer utilizar <Navigate>
-	return <Navigate to={'/marvel'} />
-- El hook useParams() permite recibir parametros que vienen en el url, se utiliza al pasar parametros del tipo (/hero/${id}) cuya url se mapea con (/hero/:id)
-- El hook useLocation() es como un estado que siempre devuelve su URL actual. Si se cambia la URL, useLocation también se actualizará, se utiliza al pasar parametros de consulta del tipo (?some=search-string)
-
-
-# Rutas Privadas y Publicas (Este tambien es un componente de nivel superior)
-- Crear el higher component o componente de nivel superior (Basicamente un functional component) ejm "PrivateRoute.jsx", pasandole como argumento un children que reseprentaria los hijos que este componente tendria (es decir las rutas privadas que este contendria)
-- En este componente se puede validar por ejm si el usuario esta logueado para acceder a las rutas privadas.
-- Utilizar este componente, colocarlo envolviendo las rutas que se vayan a dejar privadas o publicas
-<Route path="/*" element={
-  <PrivateRoute>
-	<HeroesRoutes />
-  </PrivateRoute>
-}/>
-
-
-# Context (Este es un componente de nivel superior)
-- Se debe crear en un archivo por ejm "AuthContext.jsx", puede ser dentro de un directorio llamado por ejm "context"
-	Con lo siguiente: export const AuthContext = createContext(); // import { createContext } from "react";
-- Crear el higher component o componente de nivel superior (Provider) ejm "AuthProvider.jsx", pasandole como argumento un children que reseprentaria los hijos que este componente tendria
-	Con lo siguiente: importar el elemento context creado en el punto anterior
-	return (
-		<AuthContext.Provider value={{...authState, login, logout }}>
-			{ children }
-		</AuthContext.Provider>
-	);
-- Colocar el higher component creado en el elemento mas arriba que consideremos de nuestra aplicacion
-	Con lo siguiente: Se toma el componente raiz, ejm MainApp y se reemplaza el fragment por el <AuthProvider> creado en el punto anterior
-- Utilizar donde se requiera el useContext... const context = useContext(AuthContext); //Se puede tambien desestructurar
+# CSS
+- import  '../styles/custom-styles.css'; // Importacion de una hoja de estilos regular
+- import styles from './Button.module.css'; // Importacion de modulos css como styles, clave el nombre del css con la palabra module (.module.css)
 
 
 # Material UI
@@ -791,7 +902,27 @@ import { Addcategory, GifGrid } from './components';
 </AppTheme>
 
 
-# Paquetes de terceros
+# Formik // Para manejo de formularios
+>npm install formik --save
+
+
+# Yup // Es un generador de esquemas de JavaScript para el análisis y la validación de valores.
+>npm install -S yup
+
+
+### PWA ###
+
+- Debe funcionar sobre https
+- Se puede trabajar con Workbox:
+Instalar:
+>npm install workbox-cli --global
+>workbox --version
+>workbox wizard (seguir el asistente)
+>workbox generateSW workbox-config.js
+>workbox injectManifest
+
+
+### Paquetes de terceros ###
 >npm install query-string //Para Parse and stringify URL query strings
 
 
@@ -814,24 +945,21 @@ import { Addcategory, GifGrid } from './components';
 https://sweetalert2.github.io/
 >npm install sweetalert2
 
+# Libreria para generacion de animaciones
+https://greensock.com/
+>npm install gsap
 
 # Para creacion de modales
 >npm install --save react-modal
+
+# MapBox
+>npm install --save mapbox-gl
+>npm i --save-dev @types/mapbox-gl
 
 
 # Sitio para subir imagenes o videos
 https://cloudinary.com/
 https://api.cloudinary.com/v1_1/djpwklufs/upload
-
-
-# Variables de entoro
-- Se deben crear en la raiz del proyecto los archivos .env correspondientes segun los build a tener en cuenta:
-.env para desarrollo local
-.env.develop
-.env.staging
-.env.prod (en el .env de produccion colocar la propiedad NODE_ENV=production para generar un build apropiado para produccion y no se genere este mensaje de error:
-	(You are currently using minified code outside of NODE_ENV === 'production'. This means that you are running a slower development build of Redux)
-- Segun el build que se genere tomara automaticamente el archivo .env correspondiente.
 
 
 # Testing
@@ -871,9 +999,9 @@ jest.setup.js
 import 'whatwg-fetch'; // <-- yarn add whatwg-fetch
 
 
-#################################################################################################################################################################
-########################################################################## FIREBASE #############################################################################
-#################################################################################################################################################################
+################################################################################################################################################################
+########################################################################## FIREBASE ############################################################################
+################################################################################################################################################################
 
 https://firebase.google.com/
 >npm install firebase
@@ -883,9 +1011,9 @@ https://firebase.google.com/
 
 
 
-#################################################################################################################################################################
-############################################################################ HTML5 ##############################################################################
-#################################################################################################################################################################
+################################################################################################################################################################
+############################################################################ HTML5 #############################################################################
+################################################################################################################################################################
 
 Etiquetas estructurales:
 
@@ -913,9 +1041,9 @@ Compatibilidad:
 
 	
 	
-#################################################################################################################################################################
-############################################################################### CSS3 ############################################################################
-#################################################################################################################################################################
+################################################################################################################################################################
+############################################################################### CSS3 ###########################################################################
+################################################################################################################################################################
 
 Revisar en primera medida https://caniuse.com/ para temas de compatibilidades
 
@@ -1291,232 +1419,3 @@ Ejm: <!-- CSS only -->
 <!-- CSS only -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 Y pegarla en el archivo index.html en la seccion correspondiente
-
-
-################################################################################################################################################################
-############################################################################ MONGODB ###########################################################################
-################################################################################################################################################################
-
-# Download MongoDB Community Server https://www.mongodb.com/try/download/community
-- Ver la version de mongo instalada mongod --version
-- Si se instala mongodb desde un instalador binario:
-
-	(1) Install MongoDB
-	(2) Add bin to path
-	(3) Create c:\data\db
-	(4) Create c:\data\log
-	(5) Create c:\data\mongod.cfg with contents ..
-
-	systemLog:
-		destination: file
-		path: c:\data\log\mongod.log
-	storage:
-		dbPath: c:\data\db
-
-	(6) To create service that will auto start on reboot .. RUN AS ADMIN ..
-
-	sc.exe create MongoDB binPath= "\"C:\Program Files\MongoDB\Server\3.4\bin\mongod.exe\" --service --config=\"C:\data\mongod.cfg\"" DisplayName= "MongoDB" start= "auto"
-
-- Para subir mongodb si no esta levantado ejecutar por consola mongod.exe
-
-- Para crear un usuario administrador:
-use admin
-db.createUser(
-	{
-		user: "username",
-		pwd: "password",
-		roles: [ "root" ]
-	}
-)
-- Para crear un usuario de base de datos:
-use react-mern-calendar-app
-db.createUser(
-    {
-        user: "divier",
-        pwd: "12345678",
-        roles: [
-            { role: "readWrite", db: "react-mern-calendar-app" }
-        ]
-    }
-)
-
-- Para eliminar un usuario:
-db.dropUser("username")
-
-- Al crear una BD en mongo se debe crear si se desea el esquema o los esquemas que se vayan a trabajar, ejm:
-	db.createCollection("usuarios", {
-		validator: {
-			$jsonSchema: {
-				bsonType: "object",
-				required: [ "name", "email", "phone" ],
-				properties: {
-					name: {
-						bsonType: "string",
-						description: "must be a string and is required"
-					},
-					email: {
-						bsonType: "string",
-						description: "must be a string and is required"
-					},
-					phone: {
-						bsonType: "int" ,
-						description: "must be a number and is required"
-					},
-					status: {
-						bsonType: "bool" 
-					},
-					dateCreated:{
-						bsonType: "timestamp"
-					},
-					dateModified:{
-						bsonType: "timestamp"
-					}				
-				}
-			}
-		}
-	})
-
-	db.usuarios.createIndex( { "email":1 }, { unique: true } )
-
-	db.usuarios.insertOne({
-		name:"alicia",
-		email:"a@a.com",
-		phone:123,
-		status:true
-	})
-- En mongo se conoce como una coleccion al simil de (Una Tabla de una BD relacional)
-- Luego se deben crear los modelos asociados al esquema correspondiente
-
-# Comandos en mongosh
-use database // Permite crear/seleccionar una BD (si se crea debe crearse una coleccion para que aparezca la BD con el comando show dbs)
-
-# En mongo las funciones CRUD tienen la siguiente sintaxis: nombre_bd.nombre_colleccion.funcionCRUD
-- Lasfunciones CRUD pueden ser ejecutadas de forma unica o de forma masiva
-- insertMany: Inserta multiples documentos en una coleccion. nombre_bd.nombre_colleccion.insertMany([{...},{...},{...}])
-- find: Selecciona documentos en una coleccion y retorna un cursor db.collection.find(query, projection) el segundo argumento determina que campos son retornados en los documentos encontrados
-- findOne: Retorna un solo elemento, se puede retornar un campo con: db.collection.find(query).campo 
-- replaceOne: Reemplaza un unico documento en una coleccion basado en el filtro db.collection.replaceOne(filter, replacement, options)
-- update: Modifica un o varios documentos existentes en una colleccion, para varios tener en cuenta el parametro "multi" db.collection.update(query, update,
- options)
-
-# Otros comandos
-- db.collection.drop() sirve para eliminar una coleccion
-- db.dropDatabase() sirve para eliminar una BD
-
-
-
-################################################################################################################################################################
-############################################################################# SPRING ###########################################################################
-################################################################################################################################################################
-
-# Si no se trabaja con el IDE Spring Tool Suite se puede trabajar con IntelliJ, y luego se puede ingresar a la pagina: https://start.spring.io/ para generar una estructura de proyecto
-
-
-################################################################################################################################################################
-########################################################################## JAKARTA EE9 #########################################################################
-################################################################################################################################################################
-
-
-# Servlet
-- El uso de HttpSession permite guardar hasta objetos en sesion del lado del servidor
-- Al realizarse un request al servidor automaticamente se genera la cookie JSESSIONID
-- Se puede redireccionar a otro recurso con: un redirect, o un dispacher dependiendo del escenario.
-- Basicamente el Redirect, Se refiere a que la solicitud se redirige a un recurso diferente, se crea una nueva solicitud.
-- Basicamente el Forward, Los objetos de solicitud y respuesta seguirán siendo el mismo objeto después del reenvío. Si se requiere el ámbito anterior, o no es necesario informar al usuario, pero la aplicación también desea realizar una acción interna.
-- Al crearse un Listener se debe marcar con la anotacion @WebListener e implementar las interfaces ServletContextListener, ServletRequestListener, HttpSessionListener
-- Los listener estan orientados a cualquier request y cualquier servlet
-- Al crearse un filtro se debe marcar con @WebFilter e implementar la interface Filter (Metodo doFilter - Tareas a realizar antes y/o despues de la ejecucion del servlet).
-- En @WebFilter se deben definir las rutas de los servlet que pasaran por el filtro.
-- Los filtros estan orientados exclusivamente a los request. Y se puede mapear en ellos, en que servlet se van a ejecutar.
-
-
-# JSP
-- JSTL, para su utilizacion se debe configurar la respectiva dependencia en el pom.xml y en el archivo .jsp colocar:
-<%@ taglib uri="http://java.sun.com/jstl/core" prefix="c" %>
-- <jsp:include page="layout/header.jsp" /> Permite colocar contenido de un jsp en otro jsp.
-
-
-# CDI
-- De debe crear el archivo beans.xml dentro del directorio /src/main/webapp/WEB-INF del proyecto web (war) y agregar la dependencia correspondiente para utilizar CDI
-- En el archivo beans.xml se puede configurar como se desea hacer el descubrimiento de los beans.
-- El registro de un bean se hace automaticamente en el contexto CDI
-- Tambien se puede registrar un bean mediante metodo con @Produces (Utilizado para inyectar un objeto propio de java o de un tercero, Ejm Connection, Logger)
-- Inyectar un bean dentro de otro con @Inject
-- Manejo de contextos @Depend es por defecto, tambien estan @RequestScoped, @SessionScoped (Debe implementarse la interface serializable), @ConversationScoped (Debe implementarse la interface serializable), @ApplicationScoped
-- Si se inyecta un bean que no es serializable en un contexto serializable se debe colocar como transient.
-- Si no se define el contexto de un bean, como el default es @Depend, el contexto que se toma es el del bean donde se esta haciendo la inyeccion.
-- @Named permite dar un nombre al bean
-- Si existe mas de una implementacion de una interface, las implementaciones que no se vayan a usar se pueden anotar con @Alternative excepto la que se vaya a autilizar (Inyectar)
-- Si existe mas de una implementacion de una interface, se puede considerar el uso de @Named para identificar que implementacion se va a utilizar (Inyectar)
-- Si existe mas de una implementacion de una interface, se puede crear una anotacion personalizada y anotarla con @Qualifier, y esta colocarla en la implementacion que se va a utilizar (inyectar)
-- Para inyectar recursos del servidor como por ejm un datasource se anota el atributo con @Resource
-- Se puede crear una anotacion personalizada y anotarla con @Stereotype para agrupar un conjunto de anotaciones
-- Se puede utilizar la anotacion @Disposes para cerrar recursos
-- El bean tiene en su ciclo de vida @PostConstruct que se ejecuta despues del constructor y @PreDestroy que se ejecuta cuando se destruye o finaliza el contexto del bean.
-- Se pueden utilizar interceptores para ejecutar tareas antes y despues de la ejecucion de un metodo, para ello se deb:
-	1. Crear anotacion personalizada con @InterceptorBinding
-	2. Crear clase interceptora enlazandola (anotandola) con la anotacion personalizada creada en el punto 1
-	3. Dentro de la clase del punto 2 crear un metodo anotado con @AroundInvoke que debe devolver un Object
-	4. En el metodo creado en el punto 3, llamar a InvocationContext.proceed(), que se encarga de ejecutar el o los metodos interceptados.
-	5. Anotar la clase o los metodos en especifico que vayan a ser interceptados con la anotacion creada en el punto 1.
-	6. Registrar en el archivo beans.xml el o los interceptores creados.
-
-
-#JPA
-- Tras consultar con el metodo find(), este deja en cache el objeto consultado por lo que no genera una nueva consulta sobre la BD.
-- En una consulta se puede utilizar un dto para asignar los valores de la entidad, Ejm em.createQuery("select new org.mipaquete.ClienteDto(c.nombre, c.apellido) from Cliente c", ClienteDto.class); Se debe colocar el package completo del Dto, sino genera un error.
-- Para desarrollo se puede utilizar la propiedad drop-and-create en el archivo persistence.xml para que se eliminen las tablas y se vuelvan a crear
-- Se puede utilizar un archivo que debe llamarse import.sql dentro de /src/main/resources para cargar data automaticamente
-- Con @PrePersist y @PreUpdate se puede generar informacion de campos como por ejm un auditoria de fechas de creacion y de modificacion.
-- @Embedable y @Embeded son para adicionar atributos a una entidad.
-
-# Relaciones Jpa
-- Los atributos de tipo list deben ser inicializados, no deben ser null
-- @JoinColumn permite definir un nombre de FK personalizado
-- En una relacion unidireccional de tipo @OneToMany sin el @JoinColumn se crea una tabla intermedia
-- @JoinColumn y mappedBy nunca deben ir sobre un mismo atributo
-- Una relacion bi-direccional es cuando una entidad tiene un atributo de la otra con la que esta relacionada, y viceversa. Y ambas tienen en dicho atributo el @OneToOne @OneToMany @ManyToOne @ManyToMany segun corresponda.
-- Es importante que al momento de hacer una actualizacion o eliminacion el objeto en cuestion se encuentre en el contexto de jpa.
-- @OneToMany @ManyToMany por defecto son FetchType.LAZY
-- @ManyToOne @OneToOne por defecto son FetchType.EAGER
-- Para optimizar consultas y no generar consultas separadas, se debe utilizar en un createQuery un "join fetch"
-- En una consulta, para el caso de una entidad que este relacionada con 2 listas de entidades o mas, se lanza un error de multiples bags, esto sucede si dichas listas son traidas de tipo EAGER, o aun, si en el query se utiliza el JOIN FETCH. La forma de solventar este error, es cambiando las listas en cuestion por el tipo Set (List -> Set), lo cual no es recomendable, la forma recomendable seria hacer consultas aparte para un escenario de este tipo.
-
-
-#EJB
-- Un EJB Stateless comparte la misma instancia para todos los clientes, no tiene contexto (no aplica ningun contexto CDI), no mantiene un estado
-	Por ejemplo, Si se colocan 2 instancias de un EJB Stateless en un mismo cliente (ejm un servlet), estas son iguales, es decir hay una unica instancia.
-	Antes varias peticiones a un servlet por ejm, la unica instancia que existe se mantiene.
-- Un EJB Stateful puede mantener una conversacion con el contexto
-	Por ejemplo, Si se colocan 2 instancias de un EJB Stateful en un mismo cliente (ejm un servlet), estas son diferentes.
-	Ante varias peticiones a un servlet por ejm, cada instancia se mantiene (quedan estaticas)
-- Un EJB Stateful o Stateless se debe inyectar con @Inject y no con @EJB, si para el ejb se maneja algun contexto CDI, es decir, si el EJB inyecta algun componente CDI.
-
-- Si no se utiliza la anotacion @EJB o un @Inject para inyectar un ejb, se puede llamar el ejb mediante el InitialContext por el JNDI
-	Para interface local el JNDI empieza por java:global/....
-	Para interface remota el JNDI empieza por ejb:/....
-	La interface local definida con @Local es para cuando los ejb son accedidos desde el mismo servidor de aplicaciones
-	La interface remota definida con @Remote es para cuando los ejb son accedidos desde un cliente fuera del servidor de aplicaciones donde estan contenidos los ejb. El cliente debe tener como dependencia el .jar donde esta el proyecto ejb remoto y la dependencia para comunicacion con ejb para el servidor de aplicaciones segun corresponda
-	Para el uso de la interface remota no olvidar serializar los objetos
-	Se puede utilizar un archivo jndi.properties (debe llamarse asi y estar dentro de la carpeta /src/main/resources del proyecto ejb) para establecer los valores del InitialContext
-	
-	
-#JSF3
-- En Jakarta EE 9 la anotacion @ManagedBean ha quedado deprecated, debe utilizar una anotacion del contexto CDI
-- El controlador de una pagina jsf se puede anotar con @Model que tiene inmersas las anotaciones @RequestScope y @Named
-- Las peticiones en Jakarta server faces pasan por el servlet FacesServlet
-- Un h:commandButton o un h:commandLink debe estar dentro de un h:form y en el action pueden llamar a una vista .xhtml o un metodo del controlador
-- Para pasar un parametro por get se puede usar h:link para enviar a una vista con el outcome
-	Ejm: en un index.xhtml se tiene ...
-	<h:link value="xx" outcome="form">
-		<f:param name="id" value="obj.id" />
-	</h:link>
-	en un form.xhtml se recibe con ...
-	<f:metadata>
-		<f:viewparam name="id" value="#{controller.id}" />
-	</f:metadata>
-- Para listas por lo general se debe usar un converter, es decir, una clase propia que implemente la interface Converter y utilizarlo dentro del campo h:selectOneMenu correspondiente con <f:converter binding="converter"
-- La clase converter creada tambien se debe anotar con una anotacion del contexto CDI
-- Se puede utilizar un archivo de idiomas messages.properties (debe llamarse asi y estar dentro de la carpeta /src/main/resources del proyecto web)
-	Por ejm se pueden tener messages.properties, messages_es.properties messages_en.properties para idiomas español e ingles
-	
