@@ -1,0 +1,18 @@
+################################################################################################################################################################
+############################################################################# MAVEN ############################################################################
+################################################################################################################################################################
+
+>mvn archetype:generate .......  //Se utiliza para crear un proyecto de maven por CLI
+>mvn help:active-profiles //Comando para ver los perfiles activos de maven
+
+#Tipos de Propiedades#
+- Variables de Entorno: Sirven para prefijar una variable con env ${env.PATH}
+- Variables POM: Sirven para prefijar una variable con project ${project.version}
+- Variables de Configuracion: Sirven para prefijar una variable con settings ${settings.offline}
+- Propedades Normales 
+<properties>
+<java.version>1.8</java.version>
+</properties>
+La referencia seria ${java.version} devolvera 1.8
+
+

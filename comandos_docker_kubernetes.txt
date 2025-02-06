@@ -27,7 +27,7 @@ Reiniciar si lo solicita
 
 
 # Imagenes
-https://hub.docker.com/ (Se pueden encontrar imagenes ya creadas por tecnologias)
+https://hub.docker.com/ (Se pueden encontrar imagenes ya creadas por tecnologias - Docker Hub es el repositorio de imagenes)
 - Seleccionar por ejm Open JDK 18-jdk 
 - Es importante que el jdk instalado y el indicado en los pom correspondan al mismo.
 - Ubicarse en el IDE en el proyecto del microservicio correspondiente y dentro de la carpeta raiz del mismo crear el archivo:
@@ -49,6 +49,10 @@ ENTRYPOINT ["java", "-jar", "ms-usuarios-0.0.1-SNAPSHOT.jar"]
 - Ahora se debe construir la imagen, ubicarse en el directorio raiz del microservicio y tener en cuenta que docker este corriendo y ejecutar el comando:
 >docker build .  (el punto indica que el archivo Dockerfile se encuentra justo en el directorio raiz)
 >docker build -t nombreImagen .  (O, asignando un nombre a la imagen)
+>docker build . -t diviercasas26/ms-account:v1
+
+>docker image push docker.io/diviercasas26/ms-cards:V1 (El push permite subir una imagen propia creada, al repositorio de dockerHub y con pull se puede cargar una imagen)
+
 
 - Tras ejecutarse el anterior comando se puede verificar la imagen creada:
 >docker images (Listar Imagenes)
@@ -65,6 +69,9 @@ ENTRYPOINT ["java", "-jar", "ms-usuarios-0.0.1-SNAPSHOT.jar"]
 >docker ps -a (Listar TODOS los contendedores)
 - Detener el contenedor con:
 >docker stop CONTAINER ID (reemplazar CONTAINER ID por el valor que corresponda)
+- Detener el contenedor INMEDIATAMENTE con:
+>docker kill CONTAINER ID (reemplazar CONTAINER ID por el valor que corresponda)
+
 >docker run -p 8000:8001 724dcfccdcf7 (Permite levantar el contenerdor en el puerto 8000 (que es el puerto externo) (8001 es el puerto interno))
 >docker run -p 8000:8001 nombreImagen (Permite levantar tambien con el nombre de la imagen que se haya definido en el comando build)
 
@@ -145,7 +152,7 @@ docker build -t usuarios . -f ./ms-usuarios/Dockerfile
 >docker run -d -p 8000:8001 --rm nombreImagen  (Levanta el contenedor, Este comando queda detached, con --rm se elimina automaticamente el contenedor cuando se detenga)
 
 
-## Mas comandos - Interactuando con el contenedor
+## Mas comandos - Interactuando con el contenedor (-it)
 >docker run -p 8000:8001 --rm -it nombreImagen /bin/sh (Levanta el contenedor, con --rm se elimina automaticamente el contenedor cuando se detenga, -it es para habilitar la interaccion con el contenedor)
 (NOTA: El ENTRYPOINT del Dockerfile es fijo no permite sobreescribir el comando de entrada, mientras CMD permite sobreescribir el comando de entrada)
 - Si el Dockefile tiene CMD... se puede ejecutar por ejm docker run -p 8000:8001 --rm -it nombreImagen /bin/sh  para ubicarse en ese directorio
@@ -206,6 +213,8 @@ nombre-contenedor:puerto ....
 
 
 ## Dockerizar BD
+
+#ORACLE
 >docker pull gvenzl/oracle-xe:latest  (Para crear imagen de una BD Oracle version 21c Express Edition Release 21.0.0.0.0 - Production)
 >docker run -d -p 1522:1521 --name oracle -e ORACLE_PASSWORD=123456 --network spring gvenzl/oracle-xe
 (Para levantar contenedor de la imagen de Oracle sobre la red spring)
@@ -216,6 +225,21 @@ port: 1522
 sid: xe
 username: system
 password: 123456
+
+#POSTGRES
+>docker pull postgres (Para crear imagen de una BD Postgres)
+>docker run -d -p 5432:5432 --name postgres -e POSTGRES_PASSWORD=12345678 --restart=always postgres
+>docker exec -it postgres bash  //Para ingresar al file system del container
+
+#MYSQL
+>docker pull mysql (Para crear imagen de una BD MySQL)
+>docker run -d -p 3306:3306 --name mysql -e MYSQL_ROOT_PASSWORD=12345678 --restart=always mysql
+
+>docker run -p 3306:3306 --name accountsdb -e MYSQL_ROOT_PASSWORD=1234 -e MYSQL_DATABASE=accountsdb -d mysql
+>docker run -p 3307:3306 --name loansdb -e MYSQL_ROOT_PASSWORD=1234 -e MYSQL_DATABASE=loansdb -d mysql
+>docker run -p 3308:3306 --name cardsdb -e MYSQL_ROOT_PASSWORD=1234 -e MYSQL_DATABASE=cardsdb -d mysql
+>docker run -p 3306:3306 --name accountsdb -e MYSQL_ROOT_PASSWORD=1234 -e MYSQL_DATABASE=accountsdb -v C:/Volumenes/accountsdb:/var/lib/mysql -d mysql
+>docker exec -it mysql bash  //Para ingresar al file system del container
 
 
 ## Volumenes
@@ -284,6 +308,47 @@ build:
 >docker compose up --build -d  //Forza la creacion de las imagenes si ya existen, antes de levantar los contenedores, uil al realizar algun cambio en codigo
 >docker compose build   //Crea las imagenes sin levantar los contenedores
 
+
+##Formas de generar imagenes en Docker sin utilizar un archivo Dockerfile, la ventaja es que son optimizadas##
+
+En cualquier caso no olvidar agregar en el pom:
+<packaging>jar</packaging>
+
+# https://buildpacks.io/
+Permite crear contenedores de docker sin necesidad de escribir los comandos mano en el Dockerfile.
+- Instalar en el pom:
+<plugin>
+	<groupId>org.springframework.boot</groupId>
+	<artifactId>spring-boot-maven-plugin</artifactId>
+	<configuration>
+		<image>
+			<name>diviercasas26/ms-${project.artifactId}:V1</name>
+		</image>
+	</configuration>
+</plugin>
+- Para crear una imagen Ejecutar por consola con:
+.\mvnw.cmd spring-boot:build-image
+
+
+# jib
+Utilidad de google que permite crear imagenes optimizadas de docker sin utilizar el Dockerfile.
+- Instalar en el pom:
+<plugin>
+	<groupId>com.google.cloud.tools</groupId>
+	<artifactId>jib-maven-plugin</artifactId>
+	<version>3.4.1</version>
+	<configuration>
+	  <to>
+		<image>diviercasas26/ms-${project.artifactId}:V1</image>
+		<auth>
+			 <username>diviercasas26</username>
+			 <password>T0CAaiwa36C@</password>
+		  </auth>
+	  </to>
+	</configuration>
+</plugin>
+- Para crear una imagen Ejecutar por consola con:
+.\mvnw.cmd compile jib:dockerBuild
 
 ################################################################################################################################################################
 ########################################################################## KUBERNETES ##########################################################################

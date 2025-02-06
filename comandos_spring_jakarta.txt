@@ -2,7 +2,46 @@
 ############################################################################# SPRING ###########################################################################
 ################################################################################################################################################################
 
-# Si no se trabaja con el IDE Spring Tool Suite se puede trabajar con IntelliJ, y luego se puede ingresar a la pagina: https://start.spring.io/ para generar una estructura de proyecto
+# Si no se trabaja con el IDE Spring Tool Suite se puede trabajar con IntelliJ, y luego se puede ingresar a la pagina: https://start.spring.io/ para generar una estructura de proyecto, definir las dependencias necesarias, generar y descomprimir el proyecto en una carpeta a trabajar con el IntelliJ.
+
+
+# Spring MVC
+- El Front Controller (DispatcherServlet) recibe una solicitud http desde el navegador
+- Luego se aplica un controlador basado en la URL
+- El controlador se relaciona con componentes de logica de negocio y envia datos a la vista usando el objeto Model
+- El controlador retorna/asigna la vista a mostrar
+- Trabaja las vistas con Thymeleaf
+- Un controlador debe registrarse como un componente de spring con @Controller
+
+
+# Inyeccion de Dependencias
+- Con la dependencia de spring web se tiene acceso a todo lo que corresponde a inyeccion de dependencias
+- Las instancias son creadas como singleton y se pueden inyectar con @Autowired (puede ser en atributo, metodo setter o constructor)
+- Se debe utilizar como buena practica la implementacion de un tipo Generico (Interface)
+- Todo componente en spring debe tener un constructor sin argumentos
+- Permite un bajo acoplamiento entre componentes
+- Estereotipos @Component (generico) @Repository @Service @Controller
+- Componentes o Beans, el termino bean hace referencia a cualquier componente manejado por spring
+- Cualquier Bean anotado con @Component o sus derivados bajo el package base, sera instanciado y manejado por el contenedor de spring (Auto-Scanning)
+- Otra forma de registrar componentes de spring es creando una clase anotandota con @Configuration y metodos anotados con @Bean
+- Una clase anotada con @Configuration indica que puede ser utilizada por el contenedor de spring como una fuente de definiciones de Beans
+- Con @Qualifier("...") se puede llamar una implementacion concreta, tambien se puede manejar con @Primary
+- Tener en cuenta En una clase anotada con @Configuration con metodos anotados con @Bean lo siguiente:
+	Se puede pasar como parametro de un metodo anotado con @Bean el resultado de otro metodo anotado con @Bean
+	La inyeccion de dicho parametro se puede hacer por nombre, por tipo, por calificador
+
+
+# Contexto (Scope) de los Componentes
+- Por defecto son singleton, es decir se mantiene una sola instancia de un componente en el contenedor de spring
+- Se puede modificar el comportamiento por defecto anotando con:
+@RequestScope Dura lo que dura una peticion http, desde que inicia la peticion y finaliza hasta que ésta termina
+@SessionScope Dura lo que dura una sesion, desde que inicia la sesion y finaliza hasta que se cierra el navegador o ocurre un timeout o se invalida la sesion. se debe implementar la interface serializable
+@ApplicationScope es practicamente equivalente al comportamiento por defecto (singleton)
+
+
+# Ciclo de Vida Componentes
+- @PostConstruct Para realizar algo posterior a que spring inicialice un componente
+- @PreDestroy Para realizar algo al momento en q se va a destruir un componente dependiendo de su scope (No aplica para @SessionScope)
 
 
 # Spring Data
@@ -14,25 +53,52 @@
 - Api:
 public interface CrudRepository<T, ID> extends Repository<T, ID>
 CrudRepository contiene los metodos(save, findById, findAll, count, delete, existsById, etc...)
-- Una interface propia que extienda por ejm de CrudRepository queda automaticamente registrada en el contexto de spring, no hay necesidad de anotarla con nada, con lo cual despues esta se puede injectar con el correspondiente @Autowired
+- Una interface propia que extienda por ejm de CrudRepository queda automaticamente registrada en el contexto de spring, no hay necesidad de anotarla con nada, con lo cual despues esta se puede injectar con el correspondiente @Autowired, normalmente es el DTO.
 - Posibles formas de generar querys: 
-	Optional<Usuario> findByEmail(String email);//La clave está en el nombre del metodo con findBy + atributo (en la documentacion se pueden ver los diferentes tipos)
+	Optional<Usuario> findByEmail(String email);//La clave está en el nombre del metodo con findBy + atributo (en la documentacion se pueden ver los diferentes tipos - Query Creation From Method Names)
 - Otra posible forma de consultar usando la anotacion @Query
 	@Query("select u from Usuario u where u.email=?1")
 	Optional<Usuario> consultarPorEmail(String email);
 - @Modifying // Esta anotacion se usa acompañada de @Query para sentencias INSERT, UPDATE, DELETE
 - @Query("delete from CursoUsuario cu where cu.usuarioId=?1")
+- Otro ejm:	
+	@Modifying
+    @Query("update User set role=:role where userName=:userName")
+    public void updateUserRole(@Param("userName") String userName, @Param("role") Role role);
+- Normalmente se debe crear una clase de servicio que es la que puede interactuar con diferentes DTO por logica de negocio, no olvidar anotar los metodos que consumen BD con la anotacion @Transactional aplica para modificaciones, @Transactional(readOnly=true) aplica para solo consultas.
 
 
 # Rest
-- 	@DeleteMapping("/{id}") //Cuando en el path venga algo de este tipo {id} el metodo debe recibir dicho valor como un @PathVariable
-	public ResponseEntity<?> eliminar(@PathVariable Long id) { //ResponseEntity<?> con generico para representar un tipo de salida o respuesta diferente
+- Un controller puede generar un metodo de tipo rest con la anotacion @ResponseBody
+	@GetMapping(value = "/listar-rest")
+	public @ResponseBody List<Cliente> listarRest() {
+		return clienteService.findAll();
+	}
+- Se utiliza normalmente la anotacion @RestController, la cual es la combinacion de @Controller y @ResponseBody
+- @DeleteMapping("/{id}") //Cuando en el path venga algo de este tipo {id} el metodo debe recibir dicho valor como un @PathVariable
+  public ResponseEntity<?> eliminar(@PathVariable Long id) { //ResponseEntity<?> con generico para representar un tipo de salida o respuesta diferente
 
-- 	@PutMapping("/{id}")
-	public ResponseEntity<?> editar(@RequestBody Usuario usuario, @PathVariable Long id) { //Cuando se registra o actualiza deberia venir el @RequestBody como argumento en el metodo, el cual representa el objeto a crear o actualizar.
+- @PutMapping("/{id}")
+  public ResponseEntity<?> editar(@RequestBody Usuario usuario, @PathVariable Long id) { //Cuando se registra o actualiza deberia venir el @RequestBody como argumento en el metodo, el cual representa el objeto a crear o actualizar.
+  - Pueden existir multiples @PathVariable
 
--	@GetMapping("/usuarios-por-curso")//La anotacion @RequestParam indica que viene un path con argumentos del tipo ?, ejm:http://localhost:8001/usuarios-por-curso?ids=1,2,6
-	public ResponseEntity<?> obtenerAlumnosPorCurso(@RequestParam List<Long> ids){
+- @GetMapping("/usuarios-por-curso")//La anotacion @RequestParam indica que viene un path (URL) con argumentos del tipo ?,   Ejm:http://localhost:8001/usuarios-por-curso?ids=1,2,6
+	public ResponseEntity<?> obtenerAlumnosPorCurso(@RequestParam List<Long> ids)
+	- Pueden existir multiples @RequestParam de valores separados por & en la URL
+	- Tambien se pueden recibir parametros de este tipo con HttpServletRequest
+
+
+# HTTP status codes 
+200 OK - Response to a successful GET, PUT, PATCH or DELETE. Can also be used for a POST that doesn't result in a creation
+201 Created - POST request that results in a creation
+204 No Content - DELETE request
+304 Not Modified
+400 Bad Request
+401 Unauthorized
+403 Forbidden
+404 Not Found
+405 Method Not Allowed
+500 Internal Server Error
 
 
 # Validation
@@ -43,26 +109,356 @@ CrudRepository contiene los metodos(save, findById, findAll, count, delete, exis
 </dependency>
 
 - En una clase pojo o entity se pueden anotar sus propiedades con las anotaciones de este paquete import javax.validation.constraints.*
-- En un servicio rest los metodos de cada operacion pueden recibir la anotacon @valid acompañana de BindingResult result:
+- En un servicio rest los metodos de cada operacion pueden recibir la anotacon @valid acompañada de BindingResult result:
 @PostMapping
 public ResponseEntity<?> crear(@Valid @RequestBody Usuario usuario, BindingResult result)//BindingResult debe ir en seguida del objeto a validar
 @PutMapping("/{id}")
 public ResponseEntity<?> editar(@Valid @RequestBody Usuario usuario, BindingResult result, @PathVariable Long id)//BindingResult debe ir en seguida del objeto a validar
 
 
-# Open Feign
+# Archivo de configuracion application.properties
+- Tener en cuenta dejar los archivos.properties en formato UTF-8
+Se puede configurar:
+- Conexion a BD
+- Manejo de logs
+- Propieades personalizadas 
+- Una propiedad se puede leer con la anotacion @Value("${my.app.myProp}")
+- Para crear un archivo de propiedades diferente, se debe crear una clase anotada con:
+@Configuration
+@PropertySources({
+	@PropertySource("classpath:textos.properties") //classpath es la ubicacion src/main/resources donde estarian ubicados los .properties
+	...
+})
+- Para mensajes de validacion (Bean Validation javax.validation.constraint) se puede crear un properties llamado messages.properties en src/main/resources y aqui
+La propiedad debe tener la nomenclatura Ejm: Nombre-anotacion-mayuscula.nombre-clase-minuscula.nombre-atributo
+NotEmpty.cliente.nombre=El nombre del cliente es requerido
+
+
+# Interceptores
+- Son utiles cuando se requiere aplicar una funcionalidad especifica para ciertas peticiones HTTP
+- Son fragmentos de codigo que interceptan un metodo del controlador para agregar funcionalidad antes o despues
+- Se pueden utilizar para interceptar metodos de controlador en clases anotadas con @Controller o @RestController
+- Se debe crear una clase que implemente la interface HandlerInterceptor, la cual tiene los metodos preHandler(), postHandler() y afterCompletion()
+- Esta clase se puede anotar con @Component para ser inyectada posteriormente en una clase anotada con @Configuration
+- El metodo preHandler debe devovler true para continuar la ejecucion de mas interceptores si los hay, y/o la ejecucion del metodo del controlador, con false esta ejecucion se detiene
+- Se debe crear una clase anotada con @Configuration que implemente la interface WebMvcConfigurer e implementar el metodo addInterceptors, al cual se le debe agregar el interceptor creado en el punto anterior
+
+
+# Manejo de errores
+- Se pueden manejar errores mediante una clase anotada con @ControllerAdvice por tipos de excepcion que puedan ocurrir, es decir en metodos anotados con por ejm @ExceptionHandler(ArithmeticException.class) que pueden mostrar una vista personalizada de ese tipo de error. Ejm aritmetica.html En la ruta de resources/templates/error
+- Se pueden manejar errores por vistas nombradas por codigo de error, por ejm, 404.html, 500.html, etc. En la ruta de resources/templates/error
+
+
+# Spring JPA
+- Dependencia:
+<dependency>
+	<groupId>org.springframework.boot</groupId>
+	<artifactId>spring-boot-starter-data-jpa</artifactId>
+</dependency>
+
+- @Entity
+- @Column  // Se aplica en atributos para definir propiedades del campo como (name, lenght, nullable, precision, scale, unique, etc)
+- @Temporal  // Para manejo de fechas
+- Se puede utilizar un archivo en src/main/resources que se debe llamar import.sql para creacion de datos al momento de iniciar la aplicacion
+- Se puede utilizar la anotacion @PrePersist sobre un metodo para establecer un valor en algun campo, el cual se ejecuta justo antes de llamarse el metodo persist
+
+
+## Spring Security ##
+- Dependencia:
+<dependency>
+	<groupId>org.springframework.boot</groupId>
+	<artifactId>spring-boot-starter-security</artifactId>
+</dependency>
+- Para Spring Boot < a 2.7.0 Se debe crear la clase SpringSecurityConfig que extienda de WebSecurityConfigurerAdapter y anotarla con @Configuration y Sobreescribir los metodos configure y ConfigurerGlobal para configurar rutas a proteger
+- Para Spring Boot 2.7.0+ Se puede trabajar con Spring Security en la clase de configuracion SpringSecurityConfig sin extender WebSecurityConfigurerAdapter ya que esta deprecated y anotarla con @EnableWebSecurity y @Configuration y generar un metodo @Bean que devuelva un objeto SecurityFilterChain.
+- Se puede utilizar seguridad basada en memoria o en BD (JDBC o JPA).
+- Cuando la seguridad es basada en memoria solo se trabaja en los metodos configure-ConfigurerGlobal o SecurityFilterChain segun la version de Spring Boot.
+
+- Cuando la seguridad es basada en BD:
+- Spring security provee una interface llamada UserDetailsService de la cual se debe implementar el metodo loadUserByUserName(String userName), esto se puede hacer por ejm en una clase anotada con @Service que implemente a UserDetailsService.
+- En Spring Security los Roles son conocidos como authorities y tienen por nombre el prefijo ROLE_  por tanto se deben definir en el objeto SimpleGrantedAuthority
+- Crear la clase SpringSecurityConfig anotarla con @Configuration y generar un metodo anotado con @Bean para devolver un objeto AuthenticationManager y un metodo anotado con @Bean para devolver un objeto SecurityFilterChain
+- El metodo que devuelve un objeto SecurityFilterChain, es donde se pueden declarar las reglas de seguridad de acceso para los diferentes roles y las diferentes rutas de nuestra API REST. Tambien se puede hacer aqui de forma dinamica consultando dicha informacion en una BD.
+- Las reglas de seguridad del punto anterior tambien se pueden configurar por medio de anotaciones, por ejemplo en el controller o en metodos de servicio
+ @PreAuthorize("hasRole('ADMIN')") @PreAuthorize("hasAnyRole('ADMIN','USER')")
+- Para la configuracion de reglas por medio de anotaciones se debe agregar a la clase SpringSecurityConfig la anotacion @EnableMethodSecurity
+
+
+- Se puede anotar la clase SpringSecurityConfig con @EnableGlobalMethodSecurity(securedEnabled=true, prePostEnabled=true) para proteger recursos de un controlador por medio de anotaciones
+- securedEnabled=true del punto anterior permite utilizar la anotacion @Secured({"ROLE_USER"})
+  prePostEnabled=true del punto anterior permite utilizar la anotacion @PreAuthorize("hasRole('ROLE_USER')")
+  Estas anotaciones se pueden usar a nivel de metodo del controlador o todo el controlador, es decir, anotando la clase.
+- Con SecurityContextHolder.getContext().getAuthentication() se puede obtener la informacion de un usuario autenticado, como el name, roles, etc.
+- Si no se trabaja con una sesion como tal se debe deshabilitar el CSRF (Cross-Site Request Forgery) ya que spring lo tiene habilitado por defecto.
+
+
+# Manejo de JSON (Seccion 21 del curso de spring para mayor detalle)
+- Spring utiliza jackson para manejo de JSON en la dependencia:
+<dependency>
+	<groupId>org.springframework.boot</groupId>
+	<artifactId>spring-boot-starter-web</artifactId>
+</dependency>
+- La anotacion @JsonManagedReference y @JsonBackReference permiten solucionar relaciones bidireccionales para serializacion de JSON, dejando una relacion unidireccional.
+Ejm: Una clase Cliente tiene un List de la clase Factura -> Una clase Factura tiene un atributo de la clase Cliente
+(En cliente se serializa hacia adelante la informacion de facturas con @JsonManagedReference)
+(En Factura se omite la serializacion de cliente con @JsonBackReference)
+- La anotacion @JsonIgnore ignora el atributo en cuestion de un objeto.
+- La anotacion @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) permite ignorar propiedades que no existen en el objeto originalmente, normalmente puede ocurrir un error al relacionar entidades con carga perezosa. Esta anotacion es util para ignorar una determinada propiedad de un atributo de un objeto.
+- La anotacion @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss") permite formatear propiedades de tipo fecha en el JSON
+
+
+# JWT JSON WEB TOKEN
+- Para Spring Boot < a 2.7.0
+- Dependencia:
+<dependency>
+	<groupId>io.jsonwebtoken</groupId>
+	<artifactId>jjwt</artifactId>
+	<version>0.9.0</version>
+</dependency>
+- Se puede trabajar con Spring Security en la clase de configuracion SpringSecurityConfig que extiende de WebSecurityConfigurerAdapter en el metodo configure
+- Se debe crear una clase filtro (JwtAuthenticationFilter) para autenticacion que extienda de la clase UsernamePasswordAuthenticationFilter de Spring Security y sobreescribir el metodo attemptAuthentication.
+- En la clase creada en el punto anterior, tambien se debe sobreescribir los metodos successfulAuthentication y unsuccessfulAuthentication
+- Se debe registrar el filtro creado en el metodo configure de la clase de configuracion SpringSecurityConfig
+- Se debe crear un clase filtro para autorizacion JWTAuthorizationFilter que extienda de BasicAuthenticationFilter de Spring Security y sobreescribir el metodo doFilterInternal
+- Se debe registrar el filtro creado en el metodo configure de la clase de configuracion SpringSecurityConfig
+
+- Para Spring Boot 2.7.0+
+- Dependencias:
+<dependency>
+	<groupId>io.jsonwebtoken</groupId>
+	<artifactId>jjwt-api</artifactId>
+	<version>0.11.5</version>
+</dependency>
+<dependency>
+	<groupId>io.jsonwebtoken</groupId>
+	<artifactId>jjwt-impl</artifactId>
+	<version>0.11.5</version>
+	<scope>runtime</scope>
+</dependency>
+<dependency>
+	<groupId>io.jsonwebtoken</groupId>
+	<artifactId>jjwt-jackson</artifactId>
+	<version>0.11.5</version>
+	<scope>runtime</scope>
+</dependency>
+- Se puede trabajar con Spring Security en la clase de configuracion SpringSecurityConfig sin extender WebSecurityConfigurerAdapter ya que esta deprecated
+- Se deben crear los beans:
+ 	@Bean
+	public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationManager authenticationManager)
+	@Bean
+	public AuthenticationManager authManager(HttpSecurity http)
+- Se debe crear un clase filtro para autenticacion (es decir para que se genere el token tras consumir el endpoint /login) que extienda de la clase UsernamePasswordAuthenticationFilter de Spring Security y sobreescribir el metodo attemptAuthentication.
+- Se debe crear un clase filtro para autorizacion JWTAuthorizationFilter que extienda de BasicAuthenticationFilter de Spring Security y sobreescribir el metodo doFilterInternal
+- Se deben registrar los filtros creados en el metodo filterChain de la clase de configuracion SpringSecurityConfig
+- Se debe utilizar una palabra secreta larga.
+- Se pueden parametrizar la palabra secreta y la expiracion del token en el application.properties, EJM:
+app.jwt.secret=RandomSecretKey12345678!RandomSecretKey12345678!RandomSecretKey12345678!
+app.jwt.expiration-in-ms=86400000  //Numero de milisegundos qe equivalen a un dia.
+
+
+# OAUTH2.1
+
+Configuracion del servidor:
+ - Instalar la dependencia OAuth2 Authorization Server
+ <dependency>
+	<groupId>org.springframework.boot</groupId>
+	<artifactId>spring-boot-starter-oauth2-authorization-server</artifactId>
+ </dependency>
+ - Crear la clase de configuracion correspondiente.
+ - En la clase de configuracion hay un metodo llamado registeredClientRepository(), alli debe ir el valor de .redirectUri("http://127.0.0.1:8080/login/oauth2/code/client-app") cuyo nombre client-app debe corresponder al que se coloque en la configuracion del proyecto cliente 
+ - En el metodo anterior tambien debe ir el valor de .redirectUri("http://127.0.0.1:8080/authorized") endpoint que se debe crear en el proyecto cliente
+ - (POST) http://127.0.0.1:9000/oauth2/token permite obtener el token (postman) pasando los datos del cliente configurado o presente en el metodo registeredClientRepository de la clase SecurityConfig del proyecto Server en Basic Auth, en form/data las llaves code, grant_type y redirect_uri. 
+
+
+Configuracion del cliente:
+ - Instalar la dependencia OAuth2 Client
+ <dependency>
+	<groupId>org.springframework.boot</groupId>
+	<artifactId>spring-boot-starter-oauth2-client</artifactId>
+ </dependency>
+ - Instalar la dependencia OAuth2 Resource Server
+ <dependency>
+	<groupId>org.springframework.boot</groupId>
+	<artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+ </dependency>
+ - Revisar la configuracion del archivo application.yml del proyecto client-app (Seccion 14 Curso Spring)
+ - http://127.0.0.1:8080/oauth2/authorization/client-app permite abrir una pagina para obtener codigo de autorizacion, al loguearse (con los datos del usuario configurado o presente en el metodo userDetailsService de la clase SecurityConfig del proyecto Server), se redirige al endpoint creado en el controller del proyecto del server (authorized)
+ - Tambien se puede obtener el codigo de autorizacion en postman por medio del consumo de (POST)http://127.0.0.1:9000/login y enviando en el form/data el username y password del mismo usuario del punto anterior.
+
+
+# Empaquetamiento
+- Para generar un jar se define en el pom.xml <packaging>jar</packaging>
+- Para generar un war se define en el pom.xml <packaging>war</packaging> y se debe crear en la raiz o package base del proyecto, una clase ServletInitializer que extienda de SpringBootServletInitializer y sobreescribir el metodo configure
+	@Override
+	protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
+		return builder.sources(SpringBootApplication.class);
+	}
+
+
+# Programacion Reactiva
+- Objetos asincronos
+- Project Reactor (https://projectreactor.io/) implementacion que se utiliza en spring
+- Dependencia:
+<dependency>
+	<groupId>io.projectreactor</groupId>
+	<artifactId>reactor-core</artifactId>
+</dependency>
+- Se trabaja con objetos Flux o Mono
+- Los Observables son Inmutables, asi como la clase String de Java
+- Reactive X  Otra implementacion
+
+
+# Spring Web Flux
+- Permite construir aplicaciones web basadas en la especificacion Reactive Streams
+- Es totalmente no bloqueante y admite la contrapresion de flujos
+
+
+# Spring con MongoDB
+- Lo que vienen siendo en JPA entidades en mongo se conocen como documentos
+- Una clase pojo se puede anotar con @Document para definir que esa clase representa un document
+- @Document(collection="productos")
+	public class Producto { ... }
+- Se puede utilizar la anotacion @Id de org.springframework.data.annotation.Id para marcar un atributo como el Id o identificador unico
+- Existe un jerarquia de clases para utilizar MongoDB con soporte reactivo
+ReactiveMongoRepository<T, ID> extends ReactiveSortingRepository<T, ID> extends ReactiveCrudRepository<T, ID> extends Repository<T, ID>
+- spring.data.mongodb.uri= mongodb://localhost:27017/spring_boot  // Esta propiedad en el application.properties permite definir un nombre de BD
+
+
+# Open Feign (PARA COMUNICACION ENTRE MICROSERVICIOS)
 Se debe utilizar asi:
 - Se debe colocar esta anotacion (@EnableFeignClients) en la clase principal de spring que esta marcada con @SpringBootApplication
 - Se debe crear una interface anotada con @FeignClient con el nombre del microservicio a consumir y la ruta url base del microservicio a consumir
 @FeignClient(name="ms-usuarios", url="localhost:8001")
 - Se puede acceder alguna propiedad del archivo application.properties asi ${...}:
 @FeignClient(name = "ms-cursos", url = "${ms.cursos.url}")   ms.cursos.url es igual a una propiedad existente en el application.properties
+- Se deben mapear en la interface creada, los metodos del microservicio a consumir
+- Si se esta utilizando un microservicio de redireccionamiento (API Gateway), se debe crear el controlador que llame a los metodos mapeados en la interface anterior. Inyectar la interface.
+- Dentro de la anotacion @FeignClient puede existir el atributo configuration = FeignConfiguration.class, esta clase debe ser anotada con @Configuration y definir un metodo @Bean por ejm para establecer las credenciales de acceso al microservicio que se desea consumir, si éste, tiene configurada seguridad.
+
+
+# API Gateway (REDIRECCIONAMIENTO DE MICROSERVICIOS)
+- El punto de entrada para el consumo de un conjunto de microservicios
+- Es un microservicio para redireccionar una peticion desde el cliente, a algun microservicio que este requiera de acuerdo a la logica de negocio.
+- Mirar el ejm de los microservicios del curso Udemy-MicroserviciosSpringBoot_Angular14
+
+
+# EUREKA (REGISTRO DE MICROSERVICIOS)
+- Se crea un proyecto de spring con la dependencia "Eureka Server"
+- Se configurar las variables correspondientes en el application.properties
+- Se anota la clase principal de spring con @EnableEurekaServer
+- Se debe modificar el archivo application.properties de cada microservicio para registrarlos en el eureka server con:
+	eureka.client.enabled=true
+	eureka.client.service-url.defaultZone=http://localhost:6666/eureka/  //URL donde este corriendo el servicio de eureka
+- Se puede acceder por medio de postman al servicio de eureka haciendo una peticion de tipo GET a la URL definida del servicio: http://localhost:6666
+- El servicio de eureka establece las direcciones URL para los microservicios que se registran en él. Por tanto, el servicio de eureka no ubica los microservicios por medio de la URL estatica q cada uno tiene sino por su nombre, de manera que por ejm en el API Gateway los clientes de cada microservicio ya no necesita definir una URL, quedando una configuracion asi:
+	@FeignClient(
+			value="ms-inmueble",
+			path="/api/inmueble",
+			//url="${inmueble.service.url}",
+			configuration = FeignConfigurationMSInmueble.class
+	)
+- El value o name debe corresponder con el nombre que asigna el servicio de eureka al microservicio (Ver columna Application):
+	Ejms de microservicios registrados en eureka:
+	Application	AMIs	Availability Zones	Status
+	MS-COMPRAS	n/a (1)	(1)	UP (1) - host.docker.internal:ms-compras:4444
+	MS-GATEWAY	n/a (1)	(1)	UP (1) - host.docker.internal:ms-gateway:5555
+	MS-INMUEBLE	n/a (1)	(1)	UP (1) - host.docker.internal:ms-inmueble:3333
+- Importante: 
+	1. Primero subir el servicio de eureka
+	2. Subir Microservicios
+	3. Subir API Gateway
+
+
+# CORS
+- Por ejm en una clase que tengamos definida como una API Rest anotada con @RestController, esta clase se puede anotar con @CrossOrigin(...) para definir el manejo de cors en nuestro backend.
+- Otra forma es en una clase anotada con @Configuration crear un metodo anotado con @Bean que devuelva un objeto CorsConfigurationSource y éste registrarlo en un filtro, mediante la creacion de otro metodo anotado con @Bean que devuelva un objeto FilterRegistrationBean<CorsFilter>.
+- En el metodo que devuelve el objeto SecurityFilterChain creado en la clase SpringSecurityConfig anotada con @Configuration, adicionar la referencia al cors correspondiente previsamente configurado (El creado en el metodo que devuelve el objeto CorsConfigurationSource).
+
+
+# Trabajando con una BD H2 en Memoria
+- Adicionar en las propiedades la siguiente: spring.h2.console.enabled=true para poder ingresar por el navegador web a una vista de la BD con el puerto en el que este desplegada la aplicacion, bajo la URL http://localhost:8080/h2-console  (8080 si el server.port=8080)
+
+#Paso de parametros por linea de comandos o desde el IDE(En su orden la busqueda se hace asi):
+
+-Dspring.profiles.active=qa (Java VM)
+--spring.profiles.active=qa (CLI Params)
+SPRING_PROFILES_ACTIVE=qa (ENV Vars)
+
+## Trabajar con algun mecanismo de lectura de propiedades de una aplicacionn ##
+
+## Spring Cloud  ##
+
+- Spring cloud config
+	- En un proyecto independiente, que haria las veces de servidor de configuracion:
+	- Agregar la dependencia Config Server y Actuator
+	- En la clase de aplicacion principal del proyecto colocar la anotacion @EnableConfigServer
+	- Asegurarse que este la siguiente propiedad en el pom:
+	<properties>
+		<spring-cloud.version>2023.0.0</spring-cloud.version>
+	</properties>
+	
+	- En un proyecto cliente:
+	- Agregar la dependencia Config Client
+	- Asegurarse que este la siguiente propiedad en el pom:
+	<properties>
+		<spring-cloud.version>2023.0.0</spring-cloud.version>
+	</properties>
+
+
+## Spring Actuator ##
+
+-Spring Boot Actuator es un starter de Spring Boot que nos permite obtener información sobre el estado de todos los elementos que componen la aplicación arrancada con Spring Boot 
+
+- Instalar la dependencia en los microservicios como en el Config Server:
+<dependency>
+	<groupId>org.springframework.boot</groupId>
+	<artifactId>spring-boot-starter-actuator</artifactId>
+</dependency>
+- Colocar en los archivos .yml de los microservicios a nivel raiz:
+management:
+ endpoints:
+  web:
+   exposure:
+    include: "*" //Para activar por defecto todos los endpoints de actuator y acceder a todos los endpoint disponibles
+- Probar con POSTMAN con POST: http://localhost:8081/actuator/refresh (Permite ejecutar los cambios de configuracion en un microservicio determinado)
+
+## Spring Cloud Bus con RabbitMQ (RabbitMQ mensajea entre los servicios involucrados) ##
+
+- Instalar la dependencia en los microservicios como en el Config Server:
+<dependency>
+	<groupId>org.springframework.cloud</groupId>
+	<artifactId>spring-cloud-starter-bus-amqp</artifactId>
+</dependency>
+- Ahora en los archivos .yml de los microservicios debajo de config:import
+ rabbitmq:
+  port: 5672
+  host: "localhost"
+  username: "guest"
+  password: "guest"
+
+- Ahora en el archivo .yml del Config Server debajo de cloud
+ rabbitmq:
+  port: 5672
+  host: "localhost"
+  username: "guest"
+  password: "guest"
+- Probar en POSTMAN con POST: http://localhost:8081/actuator/busrefresh (Permite ejecutar los cambios de configuracion en todos los microservicios)
 
 
 
 ################################################################################################################################################################
 ########################################################################## JAKARTA EE9 #########################################################################
 ################################################################################################################################################################
+
+# En IntelliJ adicionar los plugins:
+- Docker
+- JPA Buddy
+- Maven Helper
+- Monokai Pro Theme
+- Rainbow Brackets
+- Lombok
+- En settings -> Build, Execution, Deployment -> Annotation Processors: Marcar Enable annotation procesing
+- En File -> Invalidate Caches ... -> Marcar Clear file system cache and Local history
 
 
 # Servlet
@@ -120,13 +516,17 @@ Se debe utilizar asi:
 
 # Relaciones Jpa
 - Los atributos de tipo list deben ser inicializados, no deben ser null
-- @JoinColumn permite definir un nombre de FK personalizado
-- En una relacion unidireccional de tipo @OneToMany sin el @JoinColumn se crea una tabla intermedia
+- @JoinTable permite definir un nombre de tabla intermedia, se utiliza cuando la tabla intermedia ya existe en la BD, o se desea crear por primera vez de forma personalizada.
+- @JoinColumn permite definir un nombre de FK personalizado y esta FK se crea en la tabla de la relacion, y jpa no genera una tabla intermedia automaticamente.
+- En una relacion unidireccional de tipo @OneToMany sin el @JoinColumn se crea una tabla intermedia automaticamente.
 - @JoinColumn y mappedBy nunca deben ir sobre un mismo atributo
+- Donde va el @JoinColumn es donde va la FK.
+- En una relación @OneToMany/@ManyToOne, el lado propietario generalmente se define en el lado Many de la relación. Por lo general, es el lado que posee la clave externa.
 - Una relacion bi-direccional es cuando una entidad tiene un atributo de la otra con la que esta relacionada, y viceversa. Y ambas tienen en dicho atributo el @OneToOne @OneToMany @ManyToOne @ManyToMany segun corresponda.
 - Es importante que al momento de hacer una actualizacion o eliminacion el objeto en cuestion se encuentre en el contexto de jpa.
 - @OneToMany @ManyToMany por defecto son FetchType.LAZY
 - @ManyToOne @OneToOne por defecto son FetchType.EAGER
+- @ManyToOne no debe ser utilizado con un cascade ALL, porque no tendria sentido permitir el REMOVE.
 - Para optimizar consultas y no generar consultas separadas, se debe utilizar en un createQuery un "join fetch"
 - En una consulta, para el caso de una entidad que este relacionada con 2 listas de entidades o mas, se lanza un error de multiples bags, esto sucede si dichas listas son traidas de tipo EAGER, o aun, si en el query se utiliza el JOIN FETCH. La forma de solventar este error, es cambiando las listas en cuestion por el tipo Set (List -> Set), lo cual no es recomendable, la forma recomendable seria hacer consultas aparte para un escenario de este tipo.
 
@@ -168,3 +568,129 @@ Se debe utilizar asi:
 - Se puede utilizar un archivo de idiomas messages.properties (debe llamarse asi y estar dentro de la carpeta /src/main/resources del proyecto web)
 	Por ejm se pueden tener messages.properties, messages_es.properties messages_en.properties para idiomas español e ingles
 	
+	
+# Otros - Lombok
+@Getter  // Genera automaticamente los metodos getter de los atributos de la clase
+@Setter  // Genera automaticamente los metodos setter de los atributos de la clase
+@NoArgsConstructor  // Genera automaticamente un constructor sin parametros
+@AllArgsConstructor  // Permite Generar automaticamente un constructores con los atributos de la clase como parametros
+@Value  // Permite establecer una clase como final
+class { ... }
+@Builder  // Para generar un patron builder para establecer los atributos de la clase
+
+
+################################################################################################################################################################
+############################################################################## JAVA ############################################################################
+################################################################################################################################################################
+
+# Synchronized
+
+- Si el método sincronizado es estático, el objeto de bloqueo lo proporciona el objeto '.class'. Esto significa que bloquearemos la clase y no el objeto. Esto se llama sincronización estática.
+- Para un método no estático, el objeto de bloqueo viene dado por el objeto actual, es decir, el objeto this.
+- Una característica de Synchronized, es que es re-entrante. Esto significa que un método sincronizado puede llamar a otro método sincronizado con el mismo bloqueo. Entonces, un subproceso que contiene el bloqueo puede acceder a otro método sincronizado sin tener que adquirir un bloqueo diferente.
+- Java utiliza internamente el llamado bloqueo intrínseco (propio) o bloqueo de monitor para administrar la sincronización de hilos. Cada objeto tiene un candado intrínseco (propio) asociado.
+- Cuando un subproceso llama a un método sincronizado en un objeto, automáticamente adquiere el bloqueo intrínseco para ese objeto y lo libera cuando el método sale. La liberación de bloqueo se produce incluso si el método genera una excepción.
+- En el caso de métodos estáticos, el subproceso adquiere el bloqueo intrínseco para el objeto Clase asociado con la clase, que es diferente del bloqueo intrínseco para cualquier instancia de la clase.
+- La palabra clave synchronized también se puede usar como una declaración de bloque, pero a diferencia del método synchronized, las declaraciones sincronizadas deben especificar el objeto que proporciona el bloqueo intrínseco.
+- La idea de permitir que un subproceso adquiera el mismo bloqueo más de una vez se denomina sincronización reentrante.
+
+
+# Hilos
+// Creando hilo extendiendo la clase Thread
+public class ThreadExample extends Thread {
+
+    @Override
+    public void run() {// run() method contains the code that is executed by the thread.
+        System.out.println("Inside : " + Thread.currentThread().getName());
+    }
+	
+    public static void main(String[] args) {
+        System.out.println("Inside : " + Thread.currentThread().getName());
+        System.out.println("Creating thread...");
+        Thread thread = new ThreadExample();
+        System.out.println("Starting thread...");
+        thread.start();
+    }
+}
+// Creando hilo implementado la interface Runnable
+public class RunnableExample implements Runnable {
+
+    public static void main(String[] args) {
+        System.out.println("Inside : " + Thread.currentThread().getName());
+        System.out.println("Creating Runnable...");
+        Runnable runnable = new RunnableExample();
+        System.out.println("Creating Thread...");
+        Thread thread = new Thread(runnable);
+        System.out.println("Starting Thread...");
+        thread.start();
+    }
+
+    @Override
+    public void run() {
+        System.out.println("Inside : " + Thread.currentThread().getName());
+    }
+}
+// Creando hilo con clase anonima
+public static void main(String[] args) {
+	System.out.println("Inside : " + Thread.currentThread().getName());
+	System.out.println("Creating Runnable...");
+	Runnable runnable = new Runnable() {
+		@Override
+		public void run() {
+			System.out.println("Inside : " + Thread.currentThread().getName());
+		}
+	};
+
+	System.out.println("Creating Thread...");
+	Thread thread = new Thread(runnable);
+	System.out.println("Starting Thread...");
+	thread.start();
+}
+// Creando hilo con lambda
+public static void main(String[] args) {
+	System.out.println("Inside : " + Thread.currentThread().getName());
+	System.out.println("Creating Runnable...");
+	Runnable runnable = () -> {
+		System.out.println("Inside : " + Thread.currentThread().getName());
+	};
+
+	System.out.println("Creating Thread...");
+	Thread thread = new Thread(runnable);
+	System.out.println("Starting Thread...");
+	thread.start();
+}
+// Creando hilos con el ExecutorService del paquete java.util.concurrent
+ExecutorService executorService = Executors.newSingleThreadExecutor();
+Runnable runnable = () -> {
+	System.out.println("Inside : " + Thread.currentThread().getName());
+};
+executorService.submit(runnable);
+- ExecutorService proporciona dos métodos para cerrar un ejecutor, sino se llama alguno este queda esperando por una nueva tarea:
+	shutdown(): Cuando se llama, deja de aceptar nuevas tareas, espera a que se ejecuten las tareas enviadas anteriormente y luego finaliza el ejecutor.
+	shutdownNow(): Este método interrumpe la ejecución de la tarea y cierra el ejecutor inmediatamente.
+- Un Callable es similar a Runnable, excepto que puede devolver un resultado y generar una excepción comprobada.
+
+
+# static
+- Una variable de clase estatica, es compartida por todas las instancias de la clase.
+- Un método estático puede llamar solo a otros métodos estáticos y no puede llamar a un método no-estático desde él.
+- Un método estático no puede hacer referencia a una variable de clase no-estatica.
+
+
+# Interfaces Funcionales
+@FunctionalInterface
+Se le conoce como interface funcional a toda aquella interface que tenga solamente un método abstracto, es decir puede implementar uno o más métodos default
+
+
+# Expresiones Lambda
+Ejemplo de uso con método estático:
+(String info) -> System.out.println(info) // Expresión lambda sin referencias.
+System.out::println // Expresión lambda con referencia a método estático.
+
+Ejemplo de uso con método de un tipo:
+(Student student, int registryIndex) -> student.getRegistry(registryIndex) // Expresión lambda sin referencias.
+Student::getRegistry // Expresión lambda con referencia a método de un tipo.
+
+Ejemplo de uso con método de un objeto existente:
+Student student -> getMarks(student) // Expresión lambda sin referencias.
+this::getMarks // Expresión lambda con referencia a método de un objeto existente.

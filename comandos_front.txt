@@ -1,7 +1,6 @@
-#################################################################################################################################################################
-############################################################################ GIT ################################################################################
-#################################################################################################################################################################
-
+################################################################################################################################################################
+########################################################################### GIT ################################################################################
+################################################################################################################################################################
 
 #####Comando GIT#####
 #Subir con GitHub el codigo fuente
@@ -31,9 +30,9 @@ El último punto le indica que el clon lo vas a colocar en la carpeta donde est�
 Esto es, un repositorio que es copia de otro que ya está publicado en GitHub
 
 
-#################################################################################################################################################################
-################################################################### Visual Studio Code ##########################################################################
-#################################################################################################################################################################
+################################################################################################################################################################
+################################################################### Visual Studio Code #########################################################################
+################################################################################################################################################################
 
 Extensiones
 - Paste JSON as code
@@ -45,15 +44,22 @@ Extensiones
 - Auto Close Tag
 - TypeScript Importer
 - Activitus Bar
-- Angular Essentials
+- Angular Language Service
+- Angular Schematics
+- Auto Rename Tag
+- Auto Import
+- Error Lens
+- EditorConfig for VS Code
+- Better Comments
+- Terminal
 
 - Abrir consola Crtl+Ñ
 - Buscar Archivo Ctrl+P
 
 
-#################################################################################################################################################################
-########################################################################### Node ################################################################################
-#################################################################################################################################################################
+################################################################################################################################################################
+########################################################################## Node ################################################################################
+################################################################################################################################################################
 
 #####Backend Node#####
 Para crear un servidor que sirva como backend para pruebas
@@ -108,7 +114,7 @@ Para instalarlo:
 >npm i mongoose
 
 
-# Para instalar bcrypt
+# Para instalar bcrypt // encriptar contraseñas
 >npm i bcryptjs
 
 
@@ -142,9 +148,14 @@ Serve lo ayuda a servir un sitio estático, una aplicación de una sola página 
 >serve -s dist
 
 
-#################################################################################################################################################################
-######################################################################## TypeScript #############################################################################
-#################################################################################################################################################################
+# Manejo de archivos
+>npm i express-fileupload
+
+################################################################################################################################################################
+####################################################################### TypeScript #############################################################################
+################################################################################################################################################################
+
+npm install -g ts-node
 npm install -g typescript (Instala TypeScript de forma global)
 tsc --version
 tsc app (Genera el archivo .js correspondiente)
@@ -161,14 +172,43 @@ Ejm:
 @types/jquery (Usar JQuery)
 
 - Un type y una interface son simliares, la diferencia es que un type no se puede extender.
+- Definicion de un type:
+export type filtrosValidos = 'todos' | 'completados' | 'pendientes';
+- Utilizacion de un type:
+export const estadoInicial: filtrosValidos = 'todos' as filtrosValidos;
 
-#################################################################################################################################################################
-########################################################################### RxJS ################################################################################
-#################################################################################################################################################################
+################################################################################################################################################################
+########################################################################## RxJS ################################################################################
+################################################################################################################################################################
 
 Patron Observer: Notificar cuando suceden cambios
 Patron Iterator: Podr ejecutar operaciones secuenciales
 Programacion Funcional: Tener funciones con tareas especificas que reciban argumentos y no muten la informacion
+
+# Manejo de Observables, Ejm:
+
+let i = -1;
+
+const obs$ = new Observable((observer) => {
+  const interval = setInterval(() => {
+	i++;
+	observer.next(i);
+	if(i === 5) {
+	  observer.complete();
+	  clearInterval(interval);
+	}
+	if (i === 2) {
+	  //observer.error('i llego a 2')
+	}
+  }, 1000)
+})
+//Subscripcion:
+obs$.subscribe({
+	next: (valor) => console.log(valor),
+	error: (err) => console.error(err),
+	complete: () => console.info('complete')
+});
+
 
 === (Operador de equidad mismo tipo mismo valor) 
 
@@ -185,10 +225,22 @@ Los subjects de RxJs son un tipo de Observable especial que nos permiten realiza
 
 Aparte, hay otra característica de los Subjects que les da una gran versatilidad y es que los Subjects de RxJs son Observables y Observers al mismo tiempo por lo que nos podemos subscribir a un Subject como a cualquier otro Observable, pero además disponen de los métodos next(), error() y complete() que tienen el Observer para emitir sus valores.
 
+# OPERADORES
 
-#################################################################################################################################################################
-######################################################################## JavaScript #############################################################################
-#################################################################################################################################################################
+retry // Reintenta la ejecucion de un observable que tuvo un error, retry(numero de intentos)
+
+take // Establece un limite de emiciones del observable, take(numero de emisiones)
+
+map // Permite transformar los valores emitidos del observable, map(valor => valor + 1)
+
+filter // Permite filtrar que valor emitidor del observable son aceptados y cuales no, filter(valor => (valor % 2) == 0 ? true :  false)
+
+switchMap
+
+
+################################################################################################################################################################
+####################################################################### JavaScript #############################################################################
+################################################################################################################################################################
 
 -Todos los primitivos se pasan por valor, mientras que los objetos y los arreglos se pasan por referencia.
 -Biblioteca de utilidades para JavaScript
@@ -253,7 +305,12 @@ Create babel.config.json configuration file
 npm install @babel/preset-env --save-dev
 
 -El método map() crea un nuevo array con los resultados de la llamada a la función indicada aplicados a cada uno de sus elementos.
+var doubles = numbers.map(function(x) {
+   return x * 2;
+});
 -El método filter() crea un nuevo array con todos los elementos que cumplan la condición implementada por la función dada.
+const words = ['spray', 'limit', 'elite', 'exuberant', 'destruction', 'present'];
+const result = words.filter(word => word.length > 6);
 -El método JSON.stringify() convierte un objeto o valor de JavaScript en una cadena de texto JSON.
 -El método JSON.parse() analiza una cadena de texto como JSON, transformando opcionalmente el valor producido por el análisis.
 
@@ -288,6 +345,20 @@ const myPromise = new Promise((resolve, reject) => {
 await myPromise;
 
 - Las promesas deben ser esperadas con el await (no olvidar que esta palabra reservada se debe utilizar dentro de una funcion marcada con async)
+
+const promesa = new Promise( (resolve, reject) => {
+  if(false) {
+	resolve('Hola Mundo')
+  } else {
+	reject('Algo salio mal')
+  }
+})
+
+promesa.then((mensaje) => {
+  console.log(mensaje);
+}).catch((err) => console.log('Ocurrio un error', err));
+
+console.log('Fin del Init');
 
 
 # Delete
@@ -325,9 +396,13 @@ boo(); --> 1
 !undefine = true
 !''= true
 
-#################################################################################################################################################################
-########################################################################## Angular ##############################################################################
-#################################################################################################################################################################
+################################################################################################################################################################
+######################################################################### Angular ##############################################################################
+################################################################################################################################################################
+
+Desde Angular v17, por defecto los proyectos trabajan sin módulos (module-less)
+Pero para trabajar de forma tradicional:
+ng new <nombre de la aplicación> --standalone false
 
 
 #####Instalacion#####
@@ -351,11 +426,17 @@ Y pegarla en el archivo index.html en la seccion correspondiente
 
 #####Comandos Trabajar#####
 
+#Crear proyecto
+>npm create vite
+>npm install
+>npm run dev //Para correr el proyecto
+
 #Crear nuevo proyecto angular
 ng new mi-app
 #Generar nuevo modulo
 ng generate module mi-app
-ng generate module mi-app --routing (Esta ultima instruccion genera el archivo xxx.module.tx y el xxx-routing.module.ts)
+ng generate module mi-app --routing (Esta instruccion genera el archivo xxx.module.tx y el xxx-routing.module.ts)
+ng generate module app-routing --flat --module=app (Esta instruccion genera el xxx-routing.module.ts y actualiza el archivo xxx.module.tx)
 #Generar nuevo componente
 ng generate component mi-app/componentxxx
 #Generar nuevo servicio
@@ -417,6 +498,26 @@ Ejm en el angular.json:
 The [()] syntax combines the brackets of property binding, [], with the parentheses of event binding, (), as follows.
 - Para definir variables de entorno se hace en el archivo enviroment.ts (Desarrollo) - enviroment.prod.ts (Produccion)
 - Uso de @ViewChild para acceder a algun componente: A template reference variable as a string (e.g. query <my-component #cmp></my-component> with @ViewChild('cmp'))
+- Variable de plantilla #
+Ejm:
+	<input #phone placeholder="numero telefonico" />
+	<button (click)="callPhone(phone.value)">Call</button>
+- El decorador @Input es para enviar valores desde un componente padre a un componente hijo:
+  @Input()
+  public characterList: Character[] = [
+    {
+      name:' Trunk',
+      power: 20000
+    }
+  ]
+- Los @Input se leen como atributos del componente, es decir con [].
+
+- El decorador @Output es para enviar valores desde un componente hijo a un componente padre:
+  @Output()
+  public onNewCharacter : EventEmitter<Character> = new EventEmitter();
+  this.onNewCharacter.emit(this.character);
+- Los @Output se leen como eventos del componente, es decir con () y enviando el argumento $event, Ejm:<app-dbz-add-character(onNewCharacter)="onNewCharacter($event)"></app-dbz-add-character>
+
 
 # Pipes
 - Los pipes se pueden encadenar y se ejecutan de izquierda a derecha.
@@ -427,18 +528,50 @@ Para convertir un Pipe normal en uno impuro, simplemente añadimos "pure: false"
   pure: false //true esta por defecto
 })
 
+@Pipe({
+  name: 'filtroCompletado'
+})
+Ejm uso:
+<app-todo-item *ngFor="let todo of todos | filtroCompletado" [todo]="todo"></app-todo-item>
+
+@Pipe({
+  name: 'filtroTodo'
+})
+export class FiltroPipe implements PipeTransform {
+  transform( todos: Todo[], filtro: filtrosValidos): Todo[] {
+    return todos;
+  }
+}
+Ejm uso pasando parametro:
+<app-todo-item *ngFor="let todo of todos | filtroTodo:filtroActual" [todo]="todo"></app-todo-item>
+
+
 # Lazy Load
 - Para el lazy load se deben crear archivos de rutas por modulos e importarlos en dicho modulo y en el archivo de rutas principal hacer el llamado a los hijos (es decir a los diferentes modulos).
-- ng generate module mi-app --routing (Esta ultima instruccion genera el archivo xxx.module.tx y el xxx-routing.module.ts)
 
-# Con respecto a la proteccion de rutas de Angular Guard:
+
+# Guard (Proteccion de rutas en Angular)
+- Se deben crear los guard necesarios con el comando correspondiente e implementar los metodos canLoad(manejo de lazy load) canActivate(permite controlar si sea activa o no, una ruta).
 - El metodo canLoad solo restringe que se pueda cargar un modulo, si se carga una primera vez, éste podria ser accedido. 
 Por lo anterior se deberia implementar tambien el metodo canActivate.
+- Se deben agregar en el o los routin.module donde se tengan definidas las rutas de la aplicacion y que se desean proteger
+ Ejm:..
+	{
+		path: 'welcome',
+        component: WelcomeComponent,
+        canActivate:[AuthGuard]
+	}..
+
+
+# Router
+- Para accecer a una de la rutas creadas desde un enlace (<a routerLink='auth/login'>...</a>) se puede hacer con:
+routerLink
+
 
 # Formularios Por Template
 - Se debe importar el modulo FormModule.
 - Se trabaja con el objeto NgForm.
-- Se hace referencia al formulacio con una referencia local (referencia local en el <form #nombreReferencia="ngForm"> ...) utilizando el @ViewChild.
+- Se hace referencia al formulario con una referencia local (referencia local en el <form #nombreReferencia="ngForm"> ...) utilizando el @ViewChild.
 - Los campos deben ir acompañados de los atributos ngModel y name.
 - Para controlar las validaciones de este tipo de formularios se debe implementar una directiva personalizada.
 - Las directivas personalizadas deben declaradas en el modulo que las contiene (en la parte de las declaraciones).
@@ -446,15 +579,87 @@ Por lo anterior se deberia implementar tambien el metodo canActivate.
 
 # Formularios Reactivos
 - Se debe importar el modulo ReactiveFormModule.
-- Se debe crear una propiedad del tipo FormGroup.
+- Se debe crear una propiedad del tipo FormGroup en el componente.
 - Se debe colocar el atributo formGroup=nombrePropiedad del paso anterior en el (<form [formGroup]=nombrePropiedad> ...).
-- En cada campo del formulario se debe colocar el atributo formControlName, cuyo valor debe concodar con el establecido del lado de TypeScript.
+- En cada campo del formulario se debe colocar el atributo formControlName, cuyo valor debe concordar con el establecido del lado de TypeScript.
 - El FormBuilder es un servicio (como todo servicio debe ser inyectado para usarlo), este objeto permite mapear los campos del formulario.
 
 # Ciclo de Vida
 - Al cargarse un componente primero se ejecuta el constructor y luego el ngOnInit
 - El ngOnDestroy se dispara en el caso de mostrar o no un componente con un *ngIf
 - El ngOnChange se dispara al pasar valores por medio de un @Input de un componente padre a un hijo, el ngOnChange funciona como interceptor de una propiedad decorada con @Input. Asi mismo, los cambios de una propiedad decorada con @Input puede ser interceptada con un setter.
+
+
+# Directivas Personalizadas
+- Permiten extender la funcionalidad de un componente HTML
+- Se puede revisar la directiva de popup creada en el curso Udemy-MicroserviciosSpringBoot_Angular14
+- @HostListener es un metodo decorador usado para escuchar y manejar eventos del DOM
+
+
+# Directivas Estructurales
+- No se pueden usar varias directivas estructurales en el mismo elemento; si necesita aprovechar más de una directiva estructural, se recomienda utilizar un <ng-container>
+- *ngIf
+- *ngFor
+- [ngSwitch]
+	*ngSwitchCase
+	*ngSwitchDefault 
+- El <ng-container> de Angular es un elemento de agrupación que no interfiere con los estilos o el diseño porque Angular no lo coloca en el DOM.
+- Usar <ng-container> cuando no haya un solo elemento para alojar en la directiva.
+Ejm:
+<ul>
+  <ng-container *ngFor="let item of items">
+    <li *ngIf="item.isValid">
+      {{ item.name }}
+    </li>
+  </ng-container>
+</ul>
+
+
+# Directivas de atributos
+- [ngClass] Adiciona y/o remueve un conjunto de clases CSS.
+- [ngStyle]	Adiciona y/o remueve un conjunto de estilos HTML.
+- [(ngModel)] Adiciona el two-way data binding a un elemento de un form de HTML
+
+
+# Interceptores
+- Los interceptors en Angular nos brindan un mecanismo para interceptar y/o mutar las solicitudes y respuestas http. No debe confundirse con los Guards. Los interceptors modifican las peticiones del http module.
+- Para implementar un interceptor se necesita una clase inyectable que implemente “HttpInterceptor”. La clase debe definir un método “intercept”, el cual toma dos argumentos, req y next, y devuelve un observable de tipo HttpEvent.
+- Los interceptors se ejecutan en cada petición que se realiza al servidor, para eso deben estar registrados. Para registrar un interceptor se tiene que proveer en el array de providers: [] en nuestro módulo raíz, por lo general AppModule.
+Ejemplos de uso:
+	Autenticación
+	Añadir cabeceras extras a las peticiones.
+	Almacenar un log de las peticiones realizadas por la aplicación.
+	Loading Centralizado.
+	Manejador de Errores.
+	Notificaciones
+	Debug de las respuestas recibidas. etc..
+
+# Inyeccion de Dependencias
+- Una clase anotada con  @Injectable es para permitir que la clase se puede inyectar.
+@Injectable()
+class HeroService {}
+
+- Una dependencia se puede proporcionar en varios lugares:
+	1. A nivel componente: (En este caso se obtiene una nueva instancia del servicio con cada nueva instancia del componente)
+	@Component({
+	  selector: 'hero-list',
+	  template: '...',
+	  providers: [HeroService]
+	})
+	class HeroListComponent {}	
+	2. A Nivel de Modulo: (En este caso, la misma instancia del servicio está disponible para todos los componentes, directivas y pipes declarados en este NgModule)
+	@NgModule({
+	  declarations: [HeroListComponent]
+	  providers: [HeroService]
+	})
+	class HeroListModule {}
+	3. A Nivel raiz de la aplicacion: (En este caso se crea una única instancia compartida de HeroService y la inyecta en cualquier clase que lo solicite)
+	@Injectable({
+	  providedIn: 'root'
+	})
+	class HeroService {}
+- La forma más común de inyectar una dependencia es declararla en un constructor de una clase
+
 
 
 #####TIPS#####
@@ -488,13 +693,18 @@ Opcion 2:
 
 
 #####Instalacion de Angular Material#####
+https://material.io
+https://material.io/design/color/the-color-system.html  //Para personalizar el color del tema
+https://material.io/resources/color  //Herramienta para seleccion de colores
 ng add @angular/material
+npm i @angular/localize
 
 
-#####Instalacion de Angular-flex#####
+#####Instalacion de Angular-flex##### (Para ubicacion de elementos y manejo del Responsive)
 Dentro del proyecto ejecutar
 npm i @angular/flex-layout
 npm i -s @angular/flex-layout @angular/cdk
+- importar el modulo correspondiente FlexLayoutModule
 
 
 #####Instalacion de PrimeNG#####
@@ -532,6 +742,72 @@ npm install crypto-js --save
 npm install @types/crypto-js --save
 
 
+#####Instalacion de Firebase#####
+>npm install firebase @angular/fire
+- En el modulo donde se vaya a registrar colocar:
+	AngularFireModule.initializeApp(environment.firebase),
+	provideFirebaseApp(() => initializeApp(environment.firebase)),
+	provideFirestore(() => getFirestore())
+
+
+####Redux con Angular (NgRx)#####
+https://ngrx.io/guide/store
+>npm install @ngrx/store --save //Es el módulo principal con el administrador del estado centralizado y reactivo.
+Utilizacion	
+	1.Generar archivos xxx.actions.ts y xxx.reducer.ts
+	2.En el modulo donde se vaya a utilizar, importar el: StoreModule
+	StoreModule.forRoot({contador: contadorReducer}) // Es un ejm de nombre de reducer contadorReducer
+	3.En el constructor del componente donde se deseen llamar acciones se puede inyectar el objeto Store con: private store: Store<AppState> //Store define un generico que representa el objeto state, este objeto debe tener una propiedad con el mismo nombre definido en el StoreModule.forRoot({contador: contadorReducer}) es decir, en este ejm seria contador.
+	interface AppState {
+	  contador : number
+	}
+	4.Se puede suscribir al objeto Store para ver los cambios de estado:
+	this.store.subscribe( state => {
+      console.log(state);
+    })
+	con select se puede seleccionar un no en especifico
+	this.store.select('contador').subscribe( state => {
+      console.log(state);
+    })
+	5.Hacer el dispacth correspondiente, ejm this.store.dispatch( accion )
+
+https://ngrx.io/guide/store-devtools/install (Store Devtools)
+>npm install @ngrx/store-devtools --save
+Utilizacion:
+	1.En el modulo donde se vaya a utilizar, importar el StoreDevtoolsModule:
+	StoreDevtoolsModule.instrument({
+      maxAge: 25, // Retains last 25 states
+      logOnly: environment.production, // Restrict extension to log-only mode
+      autoPause: true, // Pauses recording actions and state changes when the extension window is not open
+    }),
+
+- Lazy del store:
+StoreModule.forFeature('ingresosEgresos', ingresoEgreso.ingresoEgresoReducer) 
+
+- Los Efectos:
+Estos escuchan acciones
+Permiten la comunicacion fuera del ecosistema de angular
+>npm install @ngrx/effects --save
+
+
+>npm i @ngrx/effects //Los reductores son funciones puras sin efectos colaterales. Este módulo es la solución para comandos asíncronos.
+>npm i @ngrx/entity //Es otro módulo opcional con ayudas y plantillas de NgRX.
+>npm i ngx-image-cropper  //Mantenimiento de imagenes
+>npm i rxfire  //Firebase + Rxjs
+
+#REDUX
+https://es.redux.js.org/
+- Toda la data de la aplicacion se encuentra en una estructura previamente definida
+- Toda la informacion se encontrará almacenada en un unico lugar llamado STORE
+- El STORE jamas se modifica de manera directa
+- Interacciones de usuario y/o codigo dispara acciones
+- El valor actual de la informacion de la aplicacion se llama STATE
+- Un nuevo estado es creado en base a la combinacion del viejo estado y una accion por una funcion llamada REDUCER
+- Si se dese utilizar redux en una aplicacion javascript pura se puede utilizar la libreria redux
+>npm i redux
+
+
+
 #####Despligue de una app angular en apache#####
 - Generar el build correspondiente de la app de angular
 - En apache ubicar el directorio donde van las paginas (Ejm C:\Apache24\htdocs) y pegar los archivos generados en el build anterior
@@ -549,9 +825,9 @@ npm install @types/crypto-js --save
 - De ser necesario habilitar plugin en navegador para el manejo de CORS
 	
 
-#################################################################################################################################################################
-########################################################################### React ###############################################################################
-#################################################################################################################################################################
+################################################################################################################################################################
+########################################################################## React ###############################################################################
+################################################################################################################################################################
 
 1. En react todo empieza con un functional component, el cual es una funcion. 
 2. Existen dos tipos de componentes, en base a funciones y los que son en base a clases. Se recomienda trabajar con esto (funciones) y no con clases.
@@ -564,8 +840,9 @@ npm install @types/crypto-js --save
 	2. Redux DevTools
 	
 - Extensiones de VSC
-	1. ES7 React/Redux
+	1. ES7+ React/Redux
 	2. Simple React Snippets
+	3. Auto Rename Tag
 
 
 # Creacion de proyecto React con Create (CRA WebPack):
@@ -618,12 +895,12 @@ https://es.reactjs.org/docs/events.html
 - Un Hook es una funcion que regresa algo y que puede recibir argumentos o no, asi se puede crear un hook personalizado para agrupar logica.
 
 - useState
-	El único argumento para el Hook useState() es el estado inicial, puede ser un primitivo, un array un objeto
+	El único argumento para el Hook useState() es el estado inicial, puede ser un primitivo, un array, un objeto
 	Devuelve una pareja de valores: el estado actual y una función que lo actualiza
 	useState si hace un re-renderizado del componente.
 	
 - useEffect
-	Recibe 2 argumentos, 1 una funcion callback de lo de se desea ejecutar, y 2 una lista de dependencias (opcional) que son las condicione spara volver a ejecutar el callback, si el 2 argumento se deja vacio el hook se dispara solo la primera vez q se crea el componente.
+	Recibe 2 argumentos, 1 una funcion callback de lo de se desea ejecutar, y 2 una lista de dependencias (opcional) que son las condiciones para volver a ejecutar el callback, si el 2 argumento se deja vacio el hook se dispara solo la primera vez q se crea el componente.
 	Al usar este Hook, le estamos indicando a React que el componente tiene que hacer algo después de renderizarse. React recordará la función que le hemos pasado (nos referiremos a ella como nuestro “efecto”), y la llamará más tarde después de actualizar el DOM. En este efecto, actualizamos el título del documento, pero también podríamos hacer peticiones de datos o invocar alguna API imperativa.
 	
 - useLayoutEffect
@@ -999,9 +1276,9 @@ jest.setup.js
 import 'whatwg-fetch'; // <-- yarn add whatwg-fetch
 
 
-################################################################################################################################################################
-########################################################################## FIREBASE ############################################################################
-################################################################################################################################################################
+###############################################################################################################################################################
+######################################################################### FIREBASE ############################################################################
+###############################################################################################################################################################
 
 https://firebase.google.com/
 >npm install firebase
@@ -1011,9 +1288,9 @@ https://firebase.google.com/
 
 
 
-################################################################################################################################################################
-############################################################################ HTML5 #############################################################################
-################################################################################################################################################################
+###############################################################################################################################################################
+########################################################################### HTML5 #############################################################################
+###############################################################################################################################################################
 
 Etiquetas estructurales:
 
@@ -1041,11 +1318,16 @@ Compatibilidad:
 
 	
 	
-################################################################################################################################################################
-############################################################################### CSS3 ###########################################################################
-################################################################################################################################################################
+###############################################################################################################################################################
+############################################################################## CSS3 ###########################################################################
+###############################################################################################################################################################
 
 Revisar en primera medida https://caniuse.com/ para temas de compatibilidades
+
+# Metodologia BEM
+- BEM (Block, Element, Modifier o Bloque, Elemento, Modificador) es una metodología ágil de desarrollo basada en componentes
+- La metodología BEM divide la interfaz de usuario en bloques independientes para crear componentes escalables y reutilizables. Explicamos cómo funciona.
+- Bloques (div, section, article, ul, ol, etc.), elementos (a, button, li, span, etc.) y modificadores. Estos últimos se definen de acuerdo a la posterior utilización que haga el desarrollador a cargo.
 
 
 Prioridades:
@@ -1061,6 +1343,14 @@ h1 {
 	...
 } 
 - La prioridad se puede modificar adicionando !important
+
+
+Elementos en Bloque o Inline:
+
+- Elementos en bloque (default)
+	div, p, h1-h6, ul, ol
+- Elementos inline (default)
+	span, a, b, string, img
 
 
 Selectores:
@@ -1115,6 +1405,14 @@ radial-gradient(red, yellow, rgb(30,144,255)) (El degradado va del centro rojo, 
 Fuentes:
 - La sintaxis para utilizar las fuentes es @font-face, el nombre del font-family que se defina aqui dentro, es el mismo que se colocara en el font-family donde se vaya a utilizar
 - Se pueden descargar fuentes personalizadas de GoogleFonts
+Ejm: roboto, y se coloca el link correspondiente en el index principal de la aplicacion q se este trabajando.
+	<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet">
+
+
+Iconos:
+- Se pueden descargar fuentes personalizadas de GoogleFonts
+Ejm:
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
 
 Flexible-Box:
@@ -1245,9 +1543,9 @@ Grid Layout:
 - grid-area: cabecera;
 - grid-area: pie;
 
-################################################################################################################################################################
-############################################################################### SASS ###########################################################################
-################################################################################################################################################################
+###############################################################################################################################################################
+############################################################################## SASS ###########################################################################
+###############################################################################################################################################################
 
 Es un pre-procesador CSS https://sass-lang.com/
 
@@ -1257,6 +1555,15 @@ Es un pre-procesador CSS https://sass-lang.com/
 
 # Compilacion
 - Ejecutar el comando: sass --watch estilos.scss styles.css  //El watch es para que tome los cambios automaticamente
+
+#Imports
+- Se pueden exportar todos los recursos de un archivo .scss a otro archivo .scss con el @import
+Ejm: 
+	Se tiene un archivo colors.scss con la propiedad $micolor:#cbcbcb;
+	Se tiene un archivo button.scss con la propiedad @import "colors";
+	.button {
+		.backgraound-color: $micolor
+	}
 
 
 # Variables
@@ -1286,7 +1593,7 @@ En el archiv0 estilos.scss se pue llamar el contenido del archivo _base.scss med
 @use 'base';
 
 
-# Mixins
+# Mixins (Permite agregar dinamicamente y multiples veces la misma estructura css en diversas expresiones)
 - Son funciones llamadas (con o sin parametros) mediante @include, Ejm:
 @mixin crearBordes($color, $size, $shadow) {
 	border: $size solid $color;
@@ -1345,9 +1652,9 @@ $contador: 1;
 }
 
 
-################################################################################################################################################################
-########################################################################### LESS ###############################################################################
-################################################################################################################################################################
+###############################################################################################################################################################
+########################################################################## LESS ###############################################################################
+###############################################################################################################################################################
 
 Es un pre-procesador CSS https://sass-lang.com/
 
@@ -1409,9 +1716,9 @@ h1 {
 }
 
 
-################################################################################################################################################################
-########################################################################## BOOTSTRAP ###########################################################################
-################################################################################################################################################################
+###############################################################################################################################################################
+######################################################################### BOOTSTRAP ###########################################################################
+###############################################################################################################################################################
 
 #####Bootstrap#####
 De la pagina https://getbootstrap.com/ copia la ruta de css
