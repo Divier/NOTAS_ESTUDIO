@@ -1,0 +1,301 @@
+##################################################################################################################################
+#	                                                            ACCESOS						                               	 	 #
+##################################################################################################################################
+# Numero Colaborador Antiguo 10058492                                                                                          	 #
+# Numero Colaborador Nuevo 50002359                                                                                            	 #
+# clavepc Claro2022*                                                                                                             #
+# clavecorreo T0CAaiwa35C@D	 T0CAaiwa35 Para Eval Desempeño																		 #
+# clave claro Claro2022*    																									 #
+#                                                                                                   	 						 #
+#                                                                                                                            	 #
+# HOST - Bonita - Correo(Pestaña HITSS ID)                                                                                    	 #
+# casasda-T0CAaiwa38C@D                                                                                                          #
+#                                                                                                                            	 #
+# SharePoint                                                                                                                 	 #
+# casasda-Colombia6222/                                                                                                        	 #
+#                                                                                                                            	 #
+# OTRS                                                                                                                       	 #
+# casasda-clavecorreo                                                                                                        	 #
+#                                                                                                                            	 #
+# WiFi Plaza Claro HitssWi                                                                                                    	 #
+# HILDEBOG\casasda-clavepc                                                                                                    	 #
+#                                                                                                                            	 #
+# Carso                                                                                                                      	 #
+# casasda@globalhitss.com - TOCAaiwa35C@D                                                                                      	 #
+#                                                                                                                                #
+# Aula Virtual                                                                                                                	 #
+# casasda - clavecorreo                                                                                                      	 #
+#                                                                                                                                #
+# Portal Firma Digital                                                                                                        	 #
+# casasda - clavecorreo                                                                                                      	 #
+#                                                                                                                            	 #
+# OpenVPN                                                                                                                      	 #
+# casasda - Abril2023                                                                                                       	 #
+#                                                                                                                            	 #
+# Correo WEB Claro                                                                                                           	 #
+# ECM1378G - Control2019*                                                                                                     	 #
+#                                                                                                                            	 #
+# SuccessFactor                                                                                                             	 #
+# 80831378 - TOCAaiwa39C@                                                                                                        #
+#                                                                                                                                #
+# complianceamx							                                                                                         #
+# casasda@globalhitss.com - Enero2023							                                                                 #
+#                                                                                                                            	 #
+# Convergencia                                                                                                                   #
+# Usuario  -  45110380@claro.com.co                                                                                              #
+# Clave  -  Xl#ro.24A@                                                                                                           #
+#                                                                                                                            	 #
+# Novedades Nomina                                                                                                               #
+# Usuario  -  casasda@globalhitss.com                                                                                            #
+# Clave  -  T0CAaiwa38C@D                                                                                                        #
+#                                                                                                                            	 #
+# Proxy Casa Inspira                                                                                                         	 #
+# ECM1378G - Control2019*                                                                                                     	 #
+# Si se bloquea usuario de claro entrar a:                                                                                       #
+# https://hades.claro.com.co:14001/identity/faces/signin?_afrLoop=2013268284254813&_afrWindowMode=0&_adf.ctrl-state=16o6lp68kh_4 #  
+# Mi Acceso>Modificar Fila 1 y 3>Desmarcar>Preparada para enviar>Enviar 													 	 #
+#																																 #
+# Para Internet si la pide COMCEL\ECM1378G y clave de claro 																	 # 
+#                                                                                                                                #
+##################################################################################################################################
+
+##################################################################################################################################
+#                                                                PROXYS                                                          #
+##################################################################################################################################
+# Plaza Claro - 90                                                                                                           	 #
+# hbogproxy01.globalhitss.com 3128 y Quitar en las excepciones https://alminspiraclaro.visualstudio.com                      	 #
+# En SourceTree marcar en Network la casilla Add proxy server configuration to Git/Mercurial                                 	 #
+#                                                                                                                             	 #
+# Casa Inspira                                                                                                               	 #
+# 172.23.50.171 8080 y Agregar en las excepciones https://alminspiraclaro.visualstudio.com                                   	 #
+# 172.23.50.171 8080 y Quitar  en las excepciones https://alminspiraclaro.visualstudio.com                                   	 #
+# En SourceTree desmarcar en Network la casilla Add proxy server configuration to Git/Mercurial                              	 #
+# En SourceTree marcar en Network la casilla Add proxy server configuration to Git/Mercurial                                 	 #
+#                                                                                                                                #
+# Nuevo proxy claro                                                                                                              #
+# proxy.claro.co   8080                                                                                                          #
+#                                                                                                                        	     #
+# Home Office                                                                                                                	 #
+# Sin Proxy                                                                                                                   	 #
+##################################################################################################################################
+
+
+Servicio Web Portal Usuarios
+
+Usuario
+Password
+hash(password SHA)
+
+GestionNew
+Tabla: PTOS_USUARIOS_PORTAL
+Debe estar configurado el usuario con el q se desea ingresar y esta asociada la URL al servicio LDAP correspondiente (Movil, Fija, ClaroCo).
+
+Varios aplicativos le pegan, este expone un metodo Autenticar, Validar Tocket
+LDAP: Movil, Fija, ClaroCo
+
+Los roles se configuran en Portal Usuarios
+
+CL_INV_NW
+ahCRHqojy7*
+
+
+ENR1089A@claro.com.co
+Bogota2023*.
+
+##FortiClient##
+VPN Name
+CLARO_SEG
+IP Address
+10.100.15.90
+Username
+inspira6
+Clave
+Claro2017
+Duration
+00:36:36
+Bytes Received
+58.76 KB
+Bytes Sent
+215.88 KB
+
+##CONFIGURACION DE FORTICLIENT PARA ACCESO A SERVICIOS DE ERICSSON##
+Connection Name: CLARO_INSPIRA
+Remote Gateway: 190.144.217.105
+Puerto: 443
+Marcar "Do not Warn Invalid Server Certificate"
+SAVE
+Username: inspira8
+Password: Claro2017
+
+#En putty configurar#
+En la categoria Session en el recuadro Host name:100.126.0.150 Port 22, en Saved Sessions colocar un nombre y Save
+En la categoria Connection>SSH>Tunnels en Source Port 8002, en Destination 172.24.42.218:8002 y Add
+En la categoria Session Save y Load
+Finalmente Open
+login as: oracle
+password: oracle 
+Probar en el navegador: http://localhost:8002/SubscriberPackages/v1.0/?wsdl
+
+
+
+######################################################CONFIGURACION DE FORTICLIENT PARA DESPLIEGUES QA###################################################
+
+Connection Name: VPN Claro 2
+Remote Gateway: 190.144.217.105
+Puerto: 443
+Marcar "Do not Warn Invalid Server Certificate"
+SAVE
+Username: inspira8
+Password: Claro2017
+
+#En putty configurar#
+En la categoria Session en el recuadro Host name:100.126.0.150 Port 22, en Saved Sessions colocar un nombre y Save
+Finalmente Open
+login as: oracle
+password: sacoracle 
+Probar en consola: ss -tln 
+
+Puertos de Oracle
+1521
+1847
+
+#WINSCP
+100.126.19.106 puerto 22
+usuario: oracle
+password: sacoracle
+
+dominios
+
+Servicios
+http://100.126.19.106:7001/console/login/LoginForm.jsp
+weblogic
+12345678
+
+
+172.18.97.239:7101 Aplicativo
+http://100.126.19.106:7101/console/login/LoginForm.jsp
+http://100.126.19.106:7101/SAC-web/
+weblogic
+weblogic123
+
+en despliegues suprimir y luego instalar.
+
+
+df -h Para ver el file system
+/ en root esta instalda la BD y el WEBLOGIC
+
+cd /var/oracle/domains/sacdev_domain/servers/AdminServer/tmp
+cd /opt/oracle
+
+cd /oracle/app/weblogic12213/user_projects/domains/sacdev_domain/bin   ./stopWebLogic.sh DETENER WEBLOGIC
+cd /oracle/app/weblogic12213/user_projects/domains/sacdev_domain/bin   nohup ./startWebLogic.sh & INICIAR WEBLOGIC
+
+cd /oracle/app/weblogic12213/user_projects/domains/sacdev_domain/bin tail -f nohup.out ver traza de log despues de iniciar
+
+
+ps aux | grep java ver procesos java
+kill -9 mata el proceso xxxxx
+
+
+#BASE DE DATOS QA#
+
+username: SAC_ADMIN2
+password: SAC_ADMIN2
+puerto: 1521
+hostname: 100.126.19.106
+servicename: sacdata
+
+
+#################################################################################################################################################################
+# Despliegues                                                                                                                                                   #
+#################################################################################################################################################################
+
+BD CIM
+
+Nombre de conexión:  
+BD_CIM_SIT
+
+Usuario:              
+PVEQA_SCHEME
+
+Contraseña:           
+PVEQA_SCHEME321
+
+Host:                 
+100.126.1.26
+
+Puerto:               
+1521
+
+SID:                  
+insdata
+
+BD PROPIEDADES ANTIGUA
+
+Usuario: USR_EAP_LOGS
+Contrasena: Zse4rfv*
+Host: 172.24.42.21
+Puerto: 1580
+Nombre del servicio: MQALOGO			  
+
+BD PROPIEDADES NUEVA
+
+Usuario: PAOSBUNOQA_HITSS
+Contrasena: C0l0mb1@.202I*
+Host: 172.24.42.21
+Puerto: 1891
+Nombre del servicio: PDB_PAOSBUNOQA	
+
+#################################################################################################################################################################
+
+MER - GRF (DEV)
+
+Pool : jdbc/Dir
+Base Datos SID: MGLDATADEV
+Usuario : MGLAPPUSER
+Clave : MGLAPPUSER
+Servidor : 100.126.0.150
+Puerto : 1521
+
+jdbc:oracle:thin:@100.126.0.150:1521:MGLDATADEV
+
+
+Pool : jdbc/GestionSeguridad
+Base Datos : GESTREP
+Usuario : GESTIONNEW
+Clave : GESTIONNEW123
+Servidor : 10.244.143.90
+Puerto : 1523
+
+MER - GRF (QA)
+
+Pool : jdbc/Dir
+Base Datos SID: PDB_MGLDBQA
+Usuario : MGL_SCHEME
+Clave : QA#21_SCHEME
+Servidor : rac-devqa-scan
+Puerto : 1750
+
+jdbc:oracle:thin:@rac-devqa-scan:1750/PDB_MGLDBQA
+
+
+################################################################################################################################################################
+
+Ubicacion de EAR: /oracle/app/weblogic12213/user_projects/domains/sac_domain/servers/AdminServer/upload
+
+http://100.126.19.106:7101/console/login/LoginForm.jsp  weblogic-weblogic123
+/oracle/app/weblogic12213/user_projects/domains/sacdev_domain 100.126.19.106:7101 (Entregas Tempranas)
+
+http://100.126.19.106:7001/console/login/LoginForm.jsp  weblogic-12345678
+/oracle/app/weblogic12213/user_projects/domains/sac_domain 100.126.19.106:7001 (QA)
+
+/oracle/app/weblogic12213/user_projects/domains/development_domain 100.126.19.106:7201
+
+
+NUEVO QA
+/development/oracle/middleware/user_projects/domains/qaservices_domain
+(SERVICIOS APIS)
+http://100.126.19.106:7002/console/login/LoginForm.jsp  weblogic-weblogic123
+
+(SAC-CONVENIOS-BENEFICIOS-UBICA)
+http://100.126.19.106:7202/console/login/LoginForm.jsp  weblogic-weblogic123
