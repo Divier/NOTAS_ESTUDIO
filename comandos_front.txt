@@ -498,6 +498,10 @@ Ejm en el angular.json:
 The [()] syntax combines the brackets of property binding, [], with the parentheses of event binding, (), as follows.
 - Para definir variables de entorno se hace en el archivo enviroment.ts (Desarrollo) - enviroment.prod.ts (Produccion)
 - Uso de @ViewChild para acceder a algun componente: A template reference variable as a string (e.g. query <my-component #cmp></my-component> with @ViewChild('cmp'))
+public txtTagInput! : ElementRef<HTMLInputElement>;
+
+- HttpClientModule se utiliza para hacer peticiones http
+
 - Variable de plantilla #
 Ejm:
 	<input #phone placeholder="numero telefonico" />
