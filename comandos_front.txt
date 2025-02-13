@@ -551,7 +551,8 @@ Ejm uso pasando parametro:
 
 
 # Lazy Load
-- Para el lazy load se deben crear archivos de rutas por modulos e importarlos en dicho modulo y en el archivo de rutas principal hacer el llamado a los hijos (es decir a los diferentes modulos).
+- Para el lazy load se deben crear archivos de rutas por modulos e importarlos en dicho modulo y en el archivo de rutas principal hacer el llamado a los hijos (es decir a los diferentes modulos) con:
+loadChildren: () => import ('./countries/countries.module').then( m => m.CountriesModule)
 
 
 # Guard (Proteccion de rutas en Angular)
@@ -568,6 +569,8 @@ Por lo anterior se deberia implementar tambien el metodo canActivate.
 
 
 # Router
+- El manejo de rutas se hace en un modulo en la raiz de la aplicacion el cual se debe importar al modulo principal.
+- Para mostrar las paginas definidas en las rutas se hace con <router-outlet></router-outlet>
 - Para accecer a una de la rutas creadas desde un enlace (<a routerLink='auth/login'>...</a>) se puede hacer con:
 routerLink
 

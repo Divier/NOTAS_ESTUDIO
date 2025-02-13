@@ -278,6 +278,46 @@ Puerto : 1750
 
 jdbc:oracle:thin:@rac-devqa-scan:1750/PDB_MGLDBQA
 
+################################################2025#############################################
+
+MGLDBDEV	(DESCRIPTION=
+      (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=bogexavm1-devqa-scan.claro.co)
+        (PORT=1525))
+      (CONNECT_DATA=
+        (SERVER=DEDICATED)
+        (SERVICE_NAME=SRV_MGLDBDEV.bogexaqapri1.cesdevqavcn1.oraclevcn.com)
+        (FAILOVER_MODE=
+          (TYPE=select)
+          (METHOD=basic)))
+                )
+USU:MGL_SCHEME
+PASS:SCHEME#21_DEV
+
+MGLDBQA	(DESCRIPTION=
+      (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=bogexavm1-devqa-scan.claro.co)
+        (PORT=1525))
+      (CONNECT_DATA=
+        (SERVER=DEDICATED)
+        (SERVICE_NAME=SRV_MGLDBQA.bogexaqapri1.cesdevqavcn1.oraclevcn.com)
+        (FAILOVER_MODE=
+          (TYPE=select)
+          (METHOD=basic)))
+                )
+ 
+USU:MGL_SCHEME
+PASS:QA#21_SCHEME
+
+Anterior DS: jdbc:oracle:thin:@//10.244.143.90:1523/GESTREP
+Nuevo: jdbc:oracle:thin:@//bogexavm1-devqa-scan.claro.co:1525/SRV_GESTIONQA.bogexaqapri1.cesdevqavcn1.oraclevcn.com 
+
+Anterior DS: jdbc:oracle:thin:@//10.244.143.90:1523/GESTIDEV
+Nuevo: jdbc:oracle:thin:@//bogexavm1-devqa-scan.claro.co:1525/SRV_GESTIONQA.bogexaqapri1.cesdevqavcn1.oraclevcn.com 
+
+
 
 ################################################################################################################################################################
 
