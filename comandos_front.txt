@@ -45,13 +45,16 @@ Extensiones
 - TypeScript Importer
 - Activitus Bar
 - Angular Language Service
+- Angular Snippets
 - Angular Schematics
+- Angular2-inline
 - Auto Rename Tag
 - Auto Import
 - Error Lens
 - EditorConfig for VS Code
 - Better Comments
 - Terminal
+- Tailwind CSS IntelliSense
 
 - Abrir consola Crtl+Ñ
 - Buscar Archivo Ctrl+P
@@ -497,6 +500,17 @@ Ejm en el angular.json:
 - Angular's two-way binding syntax is a combination of square brackets and parentheses, [()]. 
 The [()] syntax combines the brackets of property binding, [], with the parentheses of event binding, (), as follows.
 - Para definir variables de entorno se hace en el archivo enviroment.ts (Desarrollo) - enviroment.prod.ts (Produccion)
+- LA NUEVA SINTAXIS para definir variables de entorno es: ng g environments y esto genera 2 archivos
+environment.ts(produccion) environment.development.ts(desarrollo)
+
+En el archivo tsconfig.json se puede hacer la siguiente configuracion para darle un alias a la URL del environment a utilizar y no tener algo como (../../../ ....)
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths" : {
+      "@environments/*": ["src/environments/*"]
+    },
+quedando el import mucho mas limpio: import { environment } from '@environments/environment';
+
 - Uso de @ViewChild para acceder a algun componente: A template reference variable as a string (e.g. query <my-component #cmp></my-component> with @ViewChild('cmp'))
 public txtTagInput! : ElementRef<HTMLInputElement>;
 
@@ -515,12 +529,14 @@ Ejm:
     }
   ]
 - Los @Input se leen como atributos del componente, es decir con [].
+- LA NUEVA SINTAXIS para el uso de los input es: nombreVariable = input.required<T>();
 
 - El decorador @Output es para enviar valores desde un componente hijo a un componente padre:
   @Output()
   public onNewCharacter : EventEmitter<Character> = new EventEmitter();
   this.onNewCharacter.emit(this.character);
 - Los @Output se leen como eventos del componente, es decir con () y enviando el argumento $event, Ejm:<app-dbz-add-character(onNewCharacter)="onNewCharacter($event)"></app-dbz-add-character>
+- LA NUEVA SINTAXIS para el uso de los output es: nombreVariable = output<T>();
 
 
 # Pipes
@@ -553,6 +569,7 @@ Ejm uso pasando parametro:
 # Lazy Load
 - Para el lazy load se deben crear archivos de rutas por modulos e importarlos en dicho modulo y en el archivo de rutas principal hacer el llamado a los hijos (es decir a los diferentes modulos) con:
 loadChildren: () => import ('./countries/countries.module').then( m => m.CountriesModule)
+- LA NUEVA SINTAXIS para hacer el loadChildren es: loadComponent: () => import('./gifs/pages/dashboard-page/dashboard-page.component') (La clase asociada al componente debe ser marcada con default, Ejm: export default MiClase {...})
 
 
 # Guard (Proteccion de rutas en Angular)
@@ -666,7 +683,25 @@ class HeroService {}
 	})
 	class HeroService {}
 - La forma más común de inyectar una dependencia es declararla en un constructor de una clase
+- LA NUEVA SINTAXIS para inyeccion de dependencias es: nombreVariable = inject(T);
 
+
+# Señales
+- Las señales trabajan con Zoneless en lugar de ZoneJS
+- Los metodos de las señales vienen de angular/core
+- Se define una señal con signal
+- Se actualiza una señal con update o set (update es para considerar el valor que tenia la señal, mientras set no lo considera)
+- Ejm de sintaxis:
+nombreSeñal: WritableSignal<T> = signal(T);
+
+
+# Uso de efectos
+- Se define un efecto con effect
+- Asi como los metodos para el manejo de señales, los efectos vienen de angular/core
+- La sintaxis para escribir un efecto debe ser como la siguiente:
+saveToLocalStorage = effect(() => {
+  console.log(`The length is: `);
+})
 
 
 #####TIPS#####
@@ -680,6 +715,12 @@ variable.propiedad = 'valor'; //posible error read-only
 const color = "#xxxxxx".replace(/x/g, y=>(Math.random()*16|0).toString(16));
 
 - JWT (JSON WEB TOKEN, Forma de autenticacion pasiva) https://jwt.io/
+
+- Iconos: 
+https://fontawesome.com/icons
+https://cdnjs.com/libraries/font-awesome
+- Agregar al HTML
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
 
 
