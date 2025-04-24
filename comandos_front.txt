@@ -180,6 +180,10 @@ export type filtrosValidos = 'todos' | 'completados' | 'pendientes';
 - Utilizacion de un type:
 export const estadoInicial: filtrosValidos = 'todos' as filtrosValidos;
 
+# Operador ??
+let x = foo ?? bar();
+let x = foo !== null && foo !== undefined ? foo : bar();//Equivalente a la linea anterior
+
 ################################################################################################################################################################
 ########################################################################## RxJS ################################################################################
 ################################################################################################################################################################
@@ -513,8 +517,14 @@ quedando el import mucho mas limpio: import { environment } from '@environments/
 
 - Uso de @ViewChild para acceder a algun componente: A template reference variable as a string (e.g. query <my-component #cmp></my-component> with @ViewChild('cmp'))
 public txtTagInput! : ElementRef<HTMLInputElement>;
+- LA NUEVA SINTAXIS para acceder a un componente es:
+nombreVariable = viewChild<ElementRef<T>>('referenciaLocalEnElHtml');//viewChild es una señal
+Ejm: scrollDivRef = viewChild<ElementRef<HTMLDivElement>>('groupDiv');
 
 - HttpClientModule se utiliza para hacer peticiones http
+- LA NUEVA SINTAXIS para utilizar peticiones http es: http = inject(HttpClient);
+- En el archivo app.config.ts adicionar el provider: provideHttpClient(withFetch());
+
 
 - Variable de plantilla #
 Ejm:
@@ -570,6 +580,13 @@ Ejm uso pasando parametro:
 - Para el lazy load se deben crear archivos de rutas por modulos e importarlos en dicho modulo y en el archivo de rutas principal hacer el llamado a los hijos (es decir a los diferentes modulos) con:
 loadChildren: () => import ('./countries/countries.module').then( m => m.CountriesModule)
 - LA NUEVA SINTAXIS para hacer el loadChildren es: loadComponent: () => import('./gifs/pages/dashboard-page/dashboard-page.component') (La clase asociada al componente debe ser marcada con default, Ejm: export default MiClase {...})
+- Para enviar argumentos dinamicos por una URL se debe usar :nombreVariable :
+{
+	path: 'history/:query',
+	...
+}
+- Se puede acceder a un argumento dinamico mediante la inyeccion de ActivatedRoute:
+nombreVariable = inject(ActivatedRoute).params; //Esto devuelve un Observable
 
 
 # Guard (Proteccion de rutas en Angular)
@@ -684,6 +701,7 @@ class HeroService {}
 	class HeroService {}
 - La forma más común de inyectar una dependencia es declararla en un constructor de una clase
 - LA NUEVA SINTAXIS para inyeccion de dependencias es: nombreVariable = inject(T);
+- Con la nueva sintaxis se injectan los servicios en angular.
 
 
 # Señales
@@ -692,7 +710,19 @@ class HeroService {}
 - Se define una señal con signal
 - Se actualiza una señal con update o set (update es para considerar el valor que tenia la señal, mientras set no lo considera)
 - Ejm de sintaxis:
-nombreSeñal: WritableSignal<T> = signal(T);
+nombreSenal: WritableSignal<T> = signal(T);//Equivalente
+nombreSenal = signal<T>(T);//Equivalente
+
+Las señales computadas son señales de solo lectura que derivan su valor de otras señales
+
+const count: WritableSignal<number> = signal(0);
+const doubleCount: Signal<number> = computed(() => count() * 2);
+
+La señal doubleCount depende de la señal count. Cada vez que count se actualiza, Angular sabe que doubleCount también debe actualizarse.
+- Se puede convertir un Observable en una señal con toSignal, ejm:
+query = toSignal(
+    inject(ActivatedRoute).params.pipe(map((params) => params['query']))
+);
 
 
 # Uso de efectos

@@ -1,0 +1,28 @@
+################################################################################################################################################################
+#################################################################### PATRONES DE DISEÑO ########################################################################
+################################################################################################################################################################
+
+- Instalaciones
+- Deno: Deno es el entorno de ejecución de JavaScript de código abierto para la web moderna.
+>irm https://deno.land/install.ps1 | iex
+
+- Extensiones
+- Deno para Visual Studio Code
+
+
+### Patrones Creacionales ###
+
+## Resuelven problemas relacionados con:
+1. Como crear objetos de manera eficiente
+2. Ocultar la logica de instanciacion
+3. Reducir el acomplamiento de clases
+
+- Factory Method
+- Factory Function
+- Abstract Factory
+- Inmutabilidad
+- Builder
+- Singleton
+- Prototype
+
+# Builder #

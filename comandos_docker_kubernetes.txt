@@ -25,6 +25,8 @@ Reiniciar si lo solicita
 - Tener el soporte de virtualizacion habilitado desde la BIOS
 - Ejecutar el instalador
 
+>docker --version
+
 
 # Imagenes
 https://hub.docker.com/ (Se pueden encontrar imagenes ya creadas por tecnologias - Docker Hub es el repositorio de imagenes)
