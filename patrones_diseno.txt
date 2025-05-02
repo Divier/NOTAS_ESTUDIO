@@ -26,3 +26,4 @@
 - Prototype
 
 # Builder #
+git remote add origin https://github.com/Divier/Patrones-Diseno.git
