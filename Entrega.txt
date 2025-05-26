@@ -9,7 +9,7 @@
 #                                                                                                   	 						 #
 #                                                                                                                            	 #
 # HOST - Bonita - Correo(Pestaña HITSS ID)                                                                                    	 #
-# casasda-TOCAaiwa39C@D                                                                                                          #
+# casasda-TOCAaiwa40C@D                                                                                                          #
 #                                                                                                                            	 #
 # SharePoint                                                                                                                 	 #
 # casasda-Colombia6222/                                                                                                        	 #
@@ -79,7 +79,7 @@
 # Sin Proxy                                                                                                                   	 #
 ##################################################################################################################################
 
-
+DESARROLLADOR JAVA ESPECIALISTA FAM 3369
 Servicio Web Portal Usuarios
 
 Usuario
@@ -294,6 +294,7 @@ MGLDBDEV	(DESCRIPTION=
                 )
 USU:MGL_SCHEME
 PASS:SCHEME#21_DEV
+jdbc:oracle:thin:@//bogexavm1-devqa-scan.claro.co:1525/SRV_MGLDBDEV.bogexaqapri1.cesdevqavcn1.oraclevcn.com
 
 MGLDBQA	(DESCRIPTION=
       (ADDRESS=
