@@ -36,7 +36,7 @@
 # ECM1378G - Control2019*                                                                                                     	 #
 #                                                                                                                            	 #
 # SuccessFactor                                                                                                             	 #
-# 80831378 - TOCAaiwa39C@                                                                                                        #
+# 80831378 - TOCAaiwa41C@                                                                                                        #
 #                                                                                                                                #
 # complianceamx							                                                                                         #
 # casasda@globalhitss.com - Enero2023							                                                                 #
@@ -340,3 +340,16 @@ http://100.126.19.106:7002/console/login/LoginForm.jsp  weblogic-weblogic123
 
 (SAC-CONVENIOS-BENEFICIOS-UBICA)
 http://100.126.19.106:7202/console/login/LoginForm.jsp  weblogic-weblogic123
+
+
+
+########################################################################################## TC ############################################################################################
+Fecha Corte	Fecha Límite Pago
+16/05/2025	10/06/2025
+20/06/2025	14/07/2025
+18/07/2025	12/08/2025
+15/08/2025	9/09/2025
+19/09/2025	14/10/2025
+17/10/2025	11/11/2025
+21/11/2025	10/12/2025
+19/12/2025	13/01/2026
