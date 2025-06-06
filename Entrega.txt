@@ -8,7 +8,7 @@
 # clave claro Claro2022*    																									 #
 #                                                                                                   	 						 #
 #                                                                                                                            	 #
-# HOST - Bonita - Correo(Pestaña HITSS ID)                                                                                    	 #
+# HOST - Bonita - Correo(Pestaña HITSS ID) - SuccessFactor Hitss                                                              	 #
 # casasda-TOCAaiwa40C@D                                                                                                          #
 #                                                                                                                            	 #
 # SharePoint                                                                                                                 	 #
