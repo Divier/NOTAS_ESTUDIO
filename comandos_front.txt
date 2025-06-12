@@ -245,6 +245,10 @@ filter // Permite filtrar que valor emitidor del observable son aceptados y cual
 switchMap
 
 
+firstValueFrom //Permite transformar cualquier Observable en una promise.
+
+
+
 ################################################################################################################################################################
 ####################################################################### JavaScript #############################################################################
 ################################################################################################################################################################
@@ -547,6 +551,7 @@ Ejm:
   this.onNewCharacter.emit(this.character);
 - Los @Output se leen como eventos del componente, es decir con () y enviando el argumento $event, Ejm:<app-dbz-add-character(onNewCharacter)="onNewCharacter($event)"></app-dbz-add-character>
 - LA NUEVA SINTAXIS para el uso de los output es: nombreVariable = output<T>();
+- Se puede usar esta sintaxis en el html si se queire emitir el valor de una nombreVariable.emit(txtSearch.value)
 
 
 # Pipes
@@ -587,6 +592,8 @@ loadChildren: () => import ('./countries/countries.module').then( m => m.Countri
 }
 - Se puede acceder a un argumento dinamico mediante la inyeccion de ActivatedRoute:
 nombreVariable = inject(ActivatedRoute).params; //Esto devuelve un Observable
+*Revisar sintaxis de manejo de rutas de la app de paises*
+
 
 
 # Guard (Proteccion de rutas en Angular)
@@ -603,7 +610,7 @@ Por lo anterior se deberia implementar tambien el metodo canActivate.
 
 
 # Router
-- El manejo de rutas se hace en un modulo en la raiz de la aplicacion el cual se debe importar al modulo principal.
+- El manejo de rutas se hace en un modulo en la raiz de la aplicacion el cual se debe importar al modulo principal o en nuevas versiones de angular al componente.
 - Para mostrar las paginas definidas en las rutas se hace con <router-outlet></router-outlet>
 - Para accecer a una de la rutas creadas desde un enlace (<a routerLink='auth/login'>...</a>) se puede hacer con:
 routerLink
@@ -713,7 +720,7 @@ class HeroService {}
 nombreSenal: WritableSignal<T> = signal(T);//Equivalente
 nombreSenal = signal<T>(T);//Equivalente
 
-Las señales computadas son señales de solo lectura que derivan su valor de otras señales
+- Las señales computadas son señales de solo lectura que derivan su valor de otras señales
 
 const count: WritableSignal<number> = signal(0);
 const doubleCount: Signal<number> = computed(() => count() * 2);
@@ -723,6 +730,11 @@ La señal doubleCount depende de la señal count. Cada vez que count se actualiz
 query = toSignal(
     inject(ActivatedRoute).params.pipe(map((params) => params['query']))
 );
+
+- Se puede usar la función signal para mantener un estado. A veces, este estado depende de otro.
+linkedSignal(() => ) funciona de forma similar a signal, con una diferencia clave: en lugar de pasar un valor predeterminado, se pasa una función de cálculo, igual que computed. 
+Cuando el valor del cálculo cambia, el valor de linkedSignal cambia al resultado del cálculo. Esto ayuda a garantizar que linkedSignal siempre tenga un valor válido.
+
 
 
 # Uso de efectos
@@ -776,6 +788,27 @@ https://material.io/design/color/the-color-system.html  //Para personalizar el c
 https://material.io/resources/color  //Herramienta para seleccion de colores
 ng add @angular/material
 npm i @angular/localize
+
+
+#####Instalacion de Tailwind#####
+https://tailwindcss.com/docs/installation/framework-guides/angular
+>npm install tailwindcss @tailwindcss/postcss postcss --force
+Agregar en src/styles.css:
+@import "tailwindcss"; 
+
+
+
+
+#####Instalacion de DaisyUI#####
+https://daisyui.com/docs/install/
+>npm i -D daisyui@latest
+- Agregar en el archivo src/styles.css:
+@import "tailwindcss";
+@plugin "daisyui";
+- Definir tema en el archivo index.html:
+<html lang="en" data-theme="sunset">
+
+
 
 
 #####Instalacion de Angular-flex##### (Para ubicacion de elementos y manejo del Responsive)
