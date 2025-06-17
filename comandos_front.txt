@@ -525,9 +525,18 @@ public txtTagInput! : ElementRef<HTMLInputElement>;
 nombreVariable = viewChild<ElementRef<T>>('referenciaLocalEnElHtml');//viewChild es una señal
 Ejm: scrollDivRef = viewChild<ElementRef<HTMLDivElement>>('groupDiv');
 
+- Se puede colocar una referencia local en un componente input para luego acceder a el, ejm:
+    <input type="text"
+    class="input input-bordered w-full max-w-xs"
+    placeholder="Buscar heroe"
+    #txtSearch
+    (input)="searchQuery.set(txtSearch.value)"> // searchQuery es una señal que recibe el valor del input por medio de la referencia local txtSearch
+	
+
 - HttpClientModule se utiliza para hacer peticiones http
 - LA NUEVA SINTAXIS para utilizar peticiones http es: http = inject(HttpClient);
 - En el archivo app.config.ts adicionar el provider: provideHttpClient(withFetch());
+
 
 
 - Variable de plantilla #
@@ -579,6 +588,58 @@ export class FiltroPipe implements PipeTransform {
 }
 Ejm uso pasando parametro:
 <app-todo-item *ngFor="let todo of todos | filtroTodo:filtroActual" [todo]="todo"></app-todo-item>
+NUEVA SINTAXIS
+Los pipes deben importarse en el componente para ser utilizados
+imports: [LowerCasePipe, UpperCasePipe, TitleCasePipe, DatePipe, ... ]
+
+Pipes Personalziados:
+- El metodo transform(value: string) recibe como argumento el valor a tratar por el pipe y los demas argumentos que se envien (si aplica).
+transform(value: string) -> <div class="stat-value">{{ name() | toggleCase }}</div>
+transform(value: string, upper: boolean) -> <div class="stat-value">{{ name() | toggleCase: false }}</div>
+
+
+
+#Internacionalizacion
+- Para configurar un idioma sebe hacer en el app.config.ts, (el ingles es el idioma por default) ejm español:
+
+import localeEs from '@angular/common/locales/es';
+import { registerLocaleData } from '@angular/common';
+
+registerLocaleData(localeEs, 'es');
+export const appConfig: ApplicationConfig = {
+  providers:[
+              ...
+              {
+                provide: LOCALE_ID,
+                useValue: 'es'
+              }
+  ]
+};
+
+
+
+#Content Projection
+- Permite projectar codigo desde el componente padre al componente hijo
+padre.html con la etiqueta ng-content:
+
+page-component.html (padre)
+<app-card title="i18nSelectPipe"> <!-- app-card es el componente hijo -->
+	<p>Hola mundo desde el padre</p>
+	<button class="btn btn-primary">Click me</button>
+	...
+</app-card>
+
+card.component.html (hijo)
+<div class="card-body">
+    <h2 class="card-title mb-2">{{ title() }}</h2>
+    <ng-content></ng-content>
+</div>
+
+<!-- El <ng-content></ng-content> mostrara las siguientes etiquetas y todo el codigo que este dentro de <app-card></app-card>
+<p>Hola mundo desde el padre</p>
+<button class="btn btn-primary">Click me</button>
+...
+-->
 
 
 # Lazy Load
@@ -807,6 +868,15 @@ https://daisyui.com/docs/install/
 @plugin "daisyui";
 - Definir tema en el archivo index.html:
 <html lang="en" data-theme="sunset">
+
+
+
+- Para tailwind y daisyui no olvidar agregar el archivo .postcssrc.json con:
+{
+  "plugins": {
+    "@tailwindcss/postcss": {}
+  }
+}
 
 
 
