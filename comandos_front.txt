@@ -645,7 +645,12 @@ card.component.html (hijo)
 # Lazy Load
 - Para el lazy load se deben crear archivos de rutas por modulos e importarlos en dicho modulo y en el archivo de rutas principal hacer el llamado a los hijos (es decir a los diferentes modulos) con:
 loadChildren: () => import ('./countries/countries.module').then( m => m.CountriesModule)
-- LA NUEVA SINTAXIS para hacer el loadChildren es: loadComponent: () => import('./gifs/pages/dashboard-page/dashboard-page.component') (La clase asociada al componente debe ser marcada con default, Ejm: export default MiClase {...})
+- LA NUEVA SINTAXIS 
+- Para hacer el loadChildren es: loadComponent: () => import('./gifs/pages/dashboard-page/dashboard-page.component') (La clase asociada al componente debe ser marcada con default, Ejm: export default MiClase {...})
+- Tambien se pueden asociar rutas asi:
+	loadChildren: () => import('./reactive/reactive.routes').then(m => m.reactiveRoutes)
+	loadChildren: () => import('./auth/auth.routes') //Se debe exportar la variable de rutas del archivo auth.routes (export default authRoutes;)
+
 - Para enviar argumentos dinamicos por una URL se debe usar :nombreVariable :
 {
 	path: 'history/:query',
@@ -686,12 +691,27 @@ routerLink
 - Las directivas personalizadas deben declaradas en el modulo que las contiene (en la parte de las declaraciones).
 - Se puede trabajar el ngModel con la sintaxis [()] para establecer y recuperar valores.
 
+
 # Formularios Reactivos
-- Se debe importar el modulo ReactiveFormModule.
+- Se debe importar el modulo ReactiveFormsModule.
 - Se debe crear una propiedad del tipo FormGroup en el componente.
 - Se debe colocar el atributo formGroup=nombrePropiedad del paso anterior en el (<form [formGroup]=nombrePropiedad> ...).
 - En cada campo del formulario se debe colocar el atributo formControlName, cuyo valor debe concordar con el establecido del lado de TypeScript.
 - El FormBuilder es un servicio (como todo servicio debe ser inyectado para usarlo), este objeto permite mapear los campos del formulario.
+EJM:
+ formBuilder = inject(FormBuilder);
+ myForm = this.formBuilder.group({
+    name: ['' /*Valor del formulario*/, [] /*Validadores Sincronos*/, [] /*Validadores Asincronos*/], //En los validadores si es solo uno se puede colocar directo, si son varios irian dentro de un array []
+    price: [0, ...],
+    inStorage: [0, ... ]
+ })
+
+
+- Valid: Para validaciones del formulario
+- Pristine: True si el formulario no se ha tocado desde q se sirvio al usuario, false si se cambia algun valor del formulario
+- Touched: El usuario ha tocado o no el formulario, true si lo toco, false si no.
+- Value: Valor del formulario (valores de los campos)
+
 
 # Ciclo de Vida
 - Al cargarse un componente primero se ejecuta el constructor y luego el ngOnInit
