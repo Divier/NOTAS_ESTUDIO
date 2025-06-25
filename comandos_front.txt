@@ -247,6 +247,8 @@ switchMap
 
 firstValueFrom //Permite transformar cualquier Observable en una promise.
 
+combineLatest() //recibe un arreglo de observables. Este operador se utiliza mejor cuando se tienen varios observables de larga duración que dependen entre sí para algún cálculo o determinación.
+
 
 
 ################################################################################################################################################################
@@ -503,6 +505,19 @@ Ejm en el angular.json:
 }
 
 #####NOTAS SOBRE ANGULAR#####
+
+# NUEVO: DETECCCION DE CAMBIOS DE ANGULAR
+- Se debe trabajar ahora con zoneless en lugar de zone js.
+- Se debe agregar en el app.config el provider:
+providers: [
+    ...
+    provideZonelessChangeDetection(),
+	...
+]
+
+
+
+
 - Para usar *ngIf, *ngFor, pipes, se debe importar el modulo CommonModule
 - Para usar el evento ngSubmit en formularios se debe importar el modulo FormsModule (FormModule evita el refresh de la pagina, se utiliza para la aproximacion de formularios por template)
 - Angular's two-way binding syntax is a combination of square brackets and parentheses, [()]. 
@@ -701,7 +716,7 @@ routerLink
 EJM:
  formBuilder = inject(FormBuilder);
  myForm = this.formBuilder.group({
-    name: ['' /*Valor del formulario*/, [] /*Validadores Sincronos*/, [] /*Validadores Asincronos*/], //En los validadores si es solo uno se puede colocar directo, si son varios irian dentro de un array []
+    name: ['' /*Valor del formulario*/, [] /*Validadores Sincronos*/, [] /*Validadores Asincronos*/], //En los validadores si es solo uno se puede colocar directo, si son varios irian dentro de un array [], Primero se ejecutan los validadores sincronos
     price: [0, ...],
     inStorage: [0, ... ]
  })
@@ -714,9 +729,11 @@ EJM:
 
 
 # Ciclo de Vida
+- constructor() Se ejecuta cuando angular abre o instancia un componente
 - Al cargarse un componente primero se ejecuta el constructor y luego el ngOnInit
 - El ngOnDestroy se dispara en el caso de mostrar o no un componente con un *ngIf
 - El ngOnChange se dispara al pasar valores por medio de un @Input de un componente padre a un hijo, el ngOnChange funciona como interceptor de una propiedad decorada con @Input. Asi mismo, los cambios de una propiedad decorada con @Input puede ser interceptada con un setter.
+
 
 
 # Directivas Personalizadas
@@ -825,6 +842,34 @@ Cuando el valor del cálculo cambia, el valor de linkedSignal cambia al resultad
 saveToLocalStorage = effect(() => {
   console.log(`The length is: `);
 })
+
+
+#onCleanup 
+// Tener en cuenta su utilizacion para evitar fugas de memoria en los efectos
+debounceEffect = effect((onCleanup) => {
+	const value = this.inputValue();
+
+	const timeOut = setTimeout(() => {
+	  this.value.emit(value);
+	}, 1000);
+
+	onCleanup(() => {
+	  clearTimeout(timeOut);
+	})
+})
+
+//Terminar una subscripcion
+onFormChanged = effect((onCleanup) => {
+    const regionSubscription = this.onRegionChanged();// onRegionChanged es una susbcripcion
+    const countrySubscription = this.onCountryChanged();// onCountryChanged es una susbcripcion
+
+    onCleanup(() => {
+      regionSubscription.unsubscribe();
+      countrySubscription.unsubscribe();
+    });
+  });
+
+
 
 
 #####TIPS#####
